@@ -1,0 +1,1430 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Les Emocions — Psicologia Batxillerat</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #f5f3ff; color: #1e1b4b; font-family: system-ui,-apple-system,'Segoe UI',Roboto,sans-serif; min-height:100vh; }
+    .block-panel { display: none; }
+    .block-panel.active { display: block; animation: slideIn 0.4s ease; }
+    @keyframes slideIn { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+    @keyframes pulse-red { 0%,100%{border-color:#dc2626;background:#fee2e2;} 50%{border-color:#b91c1c;background:#fecaca;} }
+    .progress-fill { transition: width 0.6s ease; }
+    /* Cards */
+    .theory-card { background:#fff; border:1px solid #ede9fe; border-radius:16px; padding:24px; margin-bottom:16px; box-shadow:0 2px 14px rgba(124,58,237,0.07); }
+    .activity-card { background:#fff; border:2px solid #7c3aed; border-radius:16px; padding:24px; margin-bottom:16px; box-shadow:0 4px 22px rgba(124,58,237,0.11); }
+    /* Feedback */
+    .fb { border-radius:12px; padding:14px 16px; margin-top:12px; display:none; font-size:0.9rem; line-height:1.65; }
+    .fb.show { display:block; animation:fadeIn 0.35s ease; }
+    .fb-ok  { background:#f0fdf4; border:1px solid #86efac; color:#14532d; }
+    .fb-warn{ background:#fffbeb; border:1px solid #fcd34d; color:#92400e; }
+    .fb-info{ background:#ede9fe; border:1px solid #c4b5fd; color:#4c1d95; }
+    /* Buttons */
+    .btn  { border:none; border-radius:10px; padding:11px 22px; cursor:pointer; font-size:0.92rem; font-weight:600; transition:all 0.2s; font-family:inherit; }
+    .btn-p{ background:#7c3aed; color:#fff; }
+    .btn-p:hover{ background:#6d28d9; transform:translateY(-1px); box-shadow:0 4px 14px rgba(124,58,237,0.3); }
+    .btn-s{ background:#fff; color:#7c3aed; border:2px solid #7c3aed; }
+    .btn-s:hover{ background:#ede9fe; }
+    .btn-a{ background:#f59e0b; color:#fff; }
+    .btn-a:hover{ background:#d97706; transform:translateY(-1px); }
+    /* Choice buttons */
+    .cb { width:100%; text-align:left; background:#f8f7ff; border:1.5px solid #ede9fe; border-radius:10px; padding:12px 16px; margin:5px 0; cursor:pointer; font-size:0.9rem; color:#1e1b4b; transition:all 0.2s; font-family:inherit; display:block; }
+    .cb:hover:not([disabled]){ border-color:#7c3aed; background:#ede9fe; }
+    .cb.ok { border-color:#16a34a!important; background:#f0fdf4!important; color:#14532d!important; }
+    .cb.err{ border-color:#dc2626!important; background:#fee2e2!important; color:#7f1d1d!important; }
+    /* Textarea */
+    .ta { width:100%; background:#f8f7ff; border:1.5px solid #ede9fe; border-radius:10px; padding:12px; color:#1e1b4b; font-size:0.9rem; resize:vertical; min-height:80px; outline:none; font-family:inherit; transition:border-color 0.2s; }
+    .ta:focus { border-color:#7c3aed; box-shadow:0 0 0 3px rgba(124,58,237,0.1); }
+    /* Situation box */
+    .sb { background:#f5f3ff; border-left:4px solid #7c3aed; border-radius:0 10px 10px 0; padding:14px 18px; margin:12px 0; font-size:0.92rem; line-height:1.7; }
+    /* Drag & Drop */
+    .di { cursor:grab; background:#ede9fe; border:1.5px solid #c4b5fd; border-radius:8px; padding:8px 13px; margin:4px; display:inline-block; user-select:none; font-size:0.87rem; color:#4c1d95; font-weight:500; transition:all 0.15s; }
+    .di:hover { box-shadow:0 3px 10px rgba(124,58,237,0.2); transform:scale(1.02); }
+    .di.dragging { opacity:0.45; cursor:grabbing; }
+    .di.sel { outline:2px solid #7c3aed; outline-offset:2px; background:#ddd6fe; }
+    .dz { min-height:58px; border:2px dashed #c4b5fd; border-radius:10px; padding:8px; background:#faf8ff; transition:all 0.2s; }
+    .dz.over { border-color:#7c3aed; background:#ede9fe; }
+    .dz.dz-ok  { border-color:#16a34a; background:#f0fdf4; border-style:solid; }
+    .dz.dz-err { border-color:#dc2626; background:#fee2e2; border-style:solid; }
+    /* Tabs */
+    .sc-tab { cursor:pointer; padding:7px 16px; border-radius:20px; font-size:0.85rem; font-weight:600; border:1.5px solid #ede9fe; background:#fff; color:#6b7280; transition:all 0.2s; font-family:inherit; }
+    .sc-tab:hover { border-color:#7c3aed; color:#7c3aed; }
+    .sc-tab.sc-on { border-color:#7c3aed; background:#7c3aed; color:#fff; }
+    .em-tab { cursor:pointer; padding:8px 16px; border-radius:20px; font-size:0.88rem; font-weight:600; border:1.5px solid #ede9fe; background:#fff; color:#6b7280; transition:all 0.2s; font-family:inherit; }
+    .em-tab:hover { border-color:#7c3aed; color:#7c3aed; }
+    .em-tab.em-on { border-color:#7c3aed; background:#7c3aed; color:#fff; }
+    .em-panel { display:none; }
+    .em-panel.ep-on { display:block; animation:fadeIn 0.3s ease; }
+    /* Model answer */
+    .model-ans { background:#f0fdf4; border:1px solid #86efac; border-radius:10px; padding:12px 14px; margin-top:8px; display:none; font-size:0.87rem; line-height:1.6; color:#14532d; }
+    .model-ans.ans-on { display:block; animation:fadeIn 0.3s ease; }
+    /* Thought bubbles */
+    .bubble { background:#fff; border:2px solid #ede9fe; border-radius:14px; padding:12px 14px; margin:6px; display:inline-block; cursor:pointer; font-size:0.87rem; color:#374151; transition:all 0.2s; min-width:155px; text-align:center; font-style:italic; }
+    .bubble:hover { border-color:#7c3aed; transform:scale(1.02); }
+    .bubble.bA { border-color:#16a34a; background:#f0fdf4; color:#14532d; font-style:normal; }
+    .bubble.bB { border-color:#dc2626; background:#fee2e2; color:#7f1d1d; font-style:normal; }
+    .bubble.b-ok  { border-color:#16a34a!important; background:#f0fdf4!important; cursor:default; }
+    .bubble.b-err { border-color:#dc2626!important; background:#fee2e2!important; cursor:default; }
+    /* Matching Bloc 6 */
+    .m-sit,.m-fun { background:#fff; border:2px solid #ede9fe; border-radius:12px; padding:14px; cursor:pointer; transition:all 0.2s; font-size:0.87rem; margin-bottom:10px; line-height:1.5; }
+    .m-sit:hover:not(.m-done) { border-color:#7c3aed; background:#faf8ff; }
+    .m-fun:hover:not(.m-done) { border-color:#f59e0b; background:#fffbeb; }
+    .m-sit.m-sel { border-color:#7c3aed; background:#ede9fe; }
+    .m-fun.m-sel { border-color:#f59e0b; background:#fffbeb; }
+    .m-done { border-color:#16a34a!important; background:#f0fdf4!important; cursor:default!important; }
+    .m-flash { animation:pulse-red 0.6s ease; }
+    .m-exp { background:#f0fdf4; border-radius:8px; padding:10px 12px; margin-top:6px; font-size:0.83rem; color:#14532d; display:none; line-height:1.5; }
+    .m-exp.exp-on { display:block; animation:fadeIn 0.3s ease; }
+    /* Concept map */
+    .map-node { border-radius:12px; padding:12px 16px; text-align:center; font-weight:600; font-size:0.83rem; min-height:50px; display:flex; align-items:center; justify-content:center; border:2px dashed #c4b5fd; background:#f8f7ff; cursor:pointer; transition:all 0.2s; color:#9ca3af; }
+    .map-node:hover { border-color:#7c3aed; background:#ede9fe; color:#4c1d95; }
+    .map-node.n-fill { border-style:solid; border-color:#7c3aed; background:#ede9fe; color:#4c1d95; }
+    .map-node.n-ok { border-color:#16a34a!important; background:#f0fdf4!important; color:#14532d!important; border-style:solid!important; }
+    .map-node.n-err{ border-color:#dc2626!important; background:#fee2e2!important; color:#7f1d1d!important; border-style:solid!important; }
+    .mc { cursor:pointer; background:#ede9fe; border:1.5px solid #c4b5fd; border-radius:8px; padding:7px 14px; margin:5px; display:inline-block; font-size:0.84rem; color:#4c1d95; font-weight:600; transition:all 0.2s; }
+    .mc:hover { border-color:#7c3aed; background:#ddd6fe; }
+    .mc.mc-sel { outline:2.5px solid #7c3aed; outline-offset:2px; }
+    .mc.mc-used { opacity:0.3; pointer-events:none; }
+    /* Misc */
+    .note-box { background:#fffbeb; border:1px solid #fcd34d; border-radius:10px; padding:14px; font-size:0.88rem; color:#78350f; line-height:1.6; }
+    .pill { background:#7c3aed; color:#fff; border-radius:8px; padding:4px 12px; font-size:0.75rem; font-weight:700; display:inline-block; }
+    .step-dot { width:10px; height:10px; border-radius:50%; background:#ede9fe; display:inline-block; margin:0 3px; transition:all 0.3s; }
+    .step-dot.dd { background:#7c3aed; }
+    .step-dot.dc { background:#7c3aed; box-shadow:0 0 0 3px rgba(124,58,237,0.2); }
+    ::-webkit-scrollbar { width:5px; }
+    ::-webkit-scrollbar-track { background:#f5f3ff; }
+    ::-webkit-scrollbar-thumb { background:#c4b5fd; border-radius:3px; }
+    .btn-print { background:#059669; color:#fff; }
+    .btn-print:hover { background:#047857; transform:translateY(-1px); }
+    @media print {
+      body { background:#fff!important; color:#000!important; }
+      .no-print { display:none!important; }
+      .print-only { display:block!important; }
+      .theory-card { box-shadow:none!important; border:1px solid #ccc!important; }
+    }
+  </style>
+</head>
+<body>
+<div style="max-width:820px;margin:0 auto;padding:24px 16px 60px;">
+
+<!-- ── HEADER ─────────────────────────────────── -->
+<div class="no-print" style="margin-bottom:24px;">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+    <div>
+      <span style="font-size:0.72rem;color:#9ca3af;text-transform:uppercase;letter-spacing:2px;font-weight:700;">Psicologia · Batxillerat</span>
+      <h1 style="font-size:1.7rem;font-weight:800;color:#1e1b4b;margin:4px 0 0;">Les Emocions</h1>
+    </div>
+    <div style="text-align:right;">
+      <div id="block-label" style="font-size:0.8rem;color:#6b7280;">Introducció</div>
+      <div id="xp-display" style="font-size:0.82rem;font-weight:700;color:#7c3aed;margin-top:2px;">⭐ 0 pts</div>
+    </div>
+  </div>
+  <div style="background:#ede9fe;border-radius:99px;height:8px;overflow:hidden;">
+    <div id="progress-bar" class="progress-fill" style="height:100%;width:0%;background:linear-gradient(90deg,#7c3aed,#a855f7);border-radius:99px;"></div>
+  </div>
+  <div style="text-align:center;margin-top:10px;">
+    <span class="step-dot dc" id="sd0"></span><span class="step-dot" id="sd1"></span><span class="step-dot" id="sd2"></span><span class="step-dot" id="sd3"></span><span class="step-dot" id="sd4"></span><span class="step-dot" id="sd5"></span><span class="step-dot" id="sd6"></span><span class="step-dot" id="sd7"></span><span class="step-dot" id="sd8"></span>
+  </div>
+</div>
+
+<!-- ── PANEL 0 — INTRO ────────────────────────── -->
+<div class="block-panel active" id="panel-0">
+  <div class="theory-card" style="text-align:center;padding:40px 30px;">
+    <div style="font-size:3.5rem;margin-bottom:14px;">🧠</div>
+    <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:10px;">Benvingut/da!</h2>
+    <p style="color:#6b7280;max-width:500px;margin:0 auto 24px;line-height:1.65;">Aprendràs teoria sobre les emocions <strong>mentre la poses en pràctica</strong>. No cal memoritzar: cal comprendre, aplicar i relacionar.</p>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:480px;margin:0 auto 28px;">
+      <div style="background:#f5f3ff;border-radius:10px;padding:14px;"><div style="font-size:1.3rem;">📖</div><div style="font-size:0.78rem;color:#6b7280;margin-top:6px;">Teoria breu</div></div>
+      <div style="background:#f5f3ff;border-radius:10px;padding:14px;"><div style="font-size:1.3rem;">🎯</div><div style="font-size:0.78rem;color:#6b7280;margin-top:6px;">Activitat pràctica</div></div>
+      <div style="background:#f5f3ff;border-radius:10px;padding:14px;"><div style="font-size:1.3rem;">💬</div><div style="font-size:0.78rem;color:#6b7280;margin-top:6px;">Feedback immediat</div></div>
+    </div>
+    <button class="btn btn-p" onclick="goToBlock(1)">Comencem! →</button>
+  </div>
+</div>
+
+<!-- ── PANEL 1 — QUÈ SÓN LES EMOCIONS ────────── -->
+<div class="block-panel" id="panel-1">
+  <div class="theory-card">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;"><span class="pill">BLOC 1</span><span style="color:#6b7280;font-size:0.85rem;">Teoria</span></div>
+    <h2 style="font-size:1.2rem;font-weight:800;margin-bottom:12px;">Què són les emocions?</h2>
+    <p style="line-height:1.7;margin-bottom:14px;">Les emocions són <strong>processos psicològics automàtics</strong> que l'evolució ha desenvolupat per ajudar-nos a prendre decisions ràpidament, sense dependre necessàriament del raonament conscient.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+      <div style="background:#f5f3ff;border:1px solid #ede9fe;border-radius:10px;padding:14px;">
+        <div style="font-size:1.1rem;margin-bottom:6px;">⚡</div>
+        <div style="font-weight:700;font-size:0.85rem;margin-bottom:4px;">Resposta ràpida</div>
+        <div style="font-size:0.82rem;color:#6b7280;">Apareix abans que el pensament conscient pugui intervenir.</div>
+      </div>
+      <div style="background:#f5f3ff;border:1px solid #ede9fe;border-radius:10px;padding:14px;">
+        <div style="font-size:1.1rem;margin-bottom:6px;">🎯</div>
+        <div style="font-weight:700;font-size:0.85rem;margin-bottom:4px;">Funció adaptativa</div>
+        <div style="font-size:0.82rem;color:#6b7280;">Ens preparen per actuar davant situacions importants.</div>
+      </div>
+    </div>
+    <div class="sb"><strong>Exemple:</strong> Camines sol/a i sents un soroll fort. Sense pensar-ho, el teu cos ja es prepara per reaccionar. Això és una emoció en acció.</div>
+  </div>
+
+  <div class="activity-card">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;"><span style="font-size:1.1rem;">🎯</span><strong>Activitat 1 — Funcions de les emocions</strong></div>
+    <p style="color:#6b7280;font-size:0.88rem;margin-bottom:16px;">Llegeix cada situació i selecciona quina funció principal té l'emoció en aquell context.</p>
+
+    <div id="b1s1">
+      <div class="sb">🔊 Una persona sent un soroll inesperat darrere seu.</div>
+      <div style="font-size:0.85rem;font-weight:600;margin-bottom:8px;">L'emoció que sorgeix serveix principalment per...</div>
+      <button class="cb" onclick="b1ans(this,1,false)">Recordar una situació passada similar</button>
+      <button class="cb" onclick="b1ans(this,1,true)">Preparar el cos per reaccionar ràpidament (fugir o investigar)</button>
+      <button class="cb" onclick="b1ans(this,1,false)">Planificar una resposta racional i mesurada</button>
+    </div>
+    <div id="b1f1" class="fb"></div>
+
+    <div id="b1s2" style="display:none;margin-top:18px;">
+      <div class="sb">🎉 Un alumne rep una notícia molt bona (ha aprovat l'examen que creia haver suspès).</div>
+      <div style="font-size:0.85rem;font-weight:600;margin-bottom:8px;">L'emoció positiva que apareix...</div>
+      <button class="cb" onclick="b1ans(this,2,false)">Bloqueja la capacitat de pensar i actuar</button>
+      <button class="cb" onclick="b1ans(this,2,true)">Reforça conductes i impulsa a continuar fent allò que ha funcionat</button>
+      <button class="cb" onclick="b1ans(this,2,false)">No té cap funció adaptativa, és purament plaent</button>
+    </div>
+    <div id="b1f2" class="fb"></div>
+
+    <div id="b1s3" style="display:none;margin-top:18px;">
+      <div class="sb">😠 Una persona descobreix que algú ha llegit els seus missatges privats sense permís.</div>
+      <div style="font-size:0.85rem;font-weight:600;margin-bottom:8px;">La ira/indignació que sorgeix pot servir per...</div>
+      <button class="cb" onclick="b1ans(this,3,false)">Fer que la persona ignori la situació per evitar conflictes</button>
+      <button class="cb" onclick="b1ans(this,3,false)">Produir tristesa i resignació davant la situació</button>
+      <button class="cb" onclick="b1ans(this,3,true)">Senyalitzar que s'ha traspassat un límit i motivar per defensar-lo</button>
+    </div>
+    <div id="b1f3" class="fb"></div>
+    <div id="b1-next" style="display:none;margin-top:18px;text-align:right;">
+      <button class="btn btn-p" onclick="goToBlock(2)">Bloc 2 → Els tres components ›</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── PANEL 2 — ELS TRES COMPONENTS (drag & drop) -->
+<div class="block-panel" id="panel-2">
+  <div class="theory-card">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;"><span class="pill">BLOC 2</span><span style="color:#6b7280;font-size:0.85rem;">Teoria</span></div>
+    <h2 style="font-size:1.2rem;font-weight:800;margin-bottom:16px;">Els tres components de les emocions</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+      <div style="background:#fff0f0;border:1px solid #fca5a5;border-radius:10px;padding:14px;text-align:center;">
+        <div style="font-size:1.4rem;">🫀</div><div style="font-weight:700;color:#b91c1c;margin:6px 0 4px;font-size:0.9rem;">FISIOLÒGIC</div>
+        <div style="font-size:0.8rem;color:#6b7280;line-height:1.5;">Canvis automàtics al cos: cor accelerat, tensió muscular, sudoració...</div>
+      </div>
+      <div style="background:#f5f3ff;border:1px solid #c4b5fd;border-radius:10px;padding:14px;text-align:center;">
+        <div style="font-size:1.4rem;">🧠</div><div style="font-weight:700;color:#5b21b6;margin:6px 0 4px;font-size:0.9rem;">COGNITIU</div>
+        <div style="font-size:0.8rem;color:#6b7280;line-height:1.5;">Pensaments, interpretacions i manera de percebre la situació.</div>
+      </div>
+      <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:14px;text-align:center;">
+        <div style="font-size:1.4rem;">🚶</div><div style="font-weight:700;color:#15803d;margin:6px 0 4px;font-size:0.9rem;">CONDUCTUAL</div>
+        <div style="font-size:0.8rem;color:#6b7280;line-height:1.5;">Accions visibles i tendències a actuar d'una determinada manera.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="activity-card">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><span style="font-size:1.1rem;">🎯</span><strong>Activitat 2 — Arrossega i classifica</strong></div>
+    <p style="color:#6b7280;font-size:0.85rem;margin-bottom:14px;">Arrossega cada element al component corresponent. Si no pots arrossegar, clica primer l'element i després clica la zona correcta.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;" id="b2-tabs">
+      <button class="sc-tab sc-on" onclick="loadScen(0)">Situació A</button>
+      <button class="sc-tab" onclick="loadScen(1)">Situació B</button>
+      <button class="sc-tab" onclick="loadScen(2)">Situació C</button>
+    </div>
+    <div id="b2-desc" class="sb" style="margin-bottom:12px;"></div>
+    <div style="font-size:0.82rem;color:#6b7280;margin-bottom:6px;">Elements per classificar:</div>
+    <div id="b2-pool" style="background:#f5f3ff;border-radius:10px;padding:10px;min-height:48px;display:flex;flex-wrap:wrap;margin-bottom:14px;"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+      <div><div style="font-weight:700;color:#b91c1c;font-size:0.82rem;margin-bottom:6px;text-align:center;">🫀 Fisiològic</div>
+        <div class="dz" id="zone-fisio" ondrop="handleDrop(event,'fisio')" ondragover="allowDrop(event)" onclick="clickZone('fisio')"></div></div>
+      <div><div style="font-weight:700;color:#5b21b6;font-size:0.82rem;margin-bottom:6px;text-align:center;">🧠 Cognitiu</div>
+        <div class="dz" id="zone-cogn" ondrop="handleDrop(event,'cogn')" ondragover="allowDrop(event)" onclick="clickZone('cogn')"></div></div>
+      <div><div style="font-weight:700;color:#15803d;font-size:0.82rem;margin-bottom:6px;text-align:center;">🚶 Conductual</div>
+        <div class="dz" id="zone-cond" ondrop="handleDrop(event,'cond')" ondragover="allowDrop(event)" onclick="clickZone('cond')"></div></div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">
+      <button class="btn btn-p" onclick="checkDD()">Comprova →</button>
+      <button class="btn btn-s" onclick="resetDD()">Reinicia</button>
+    </div>
+    <div id="b2-fb" class="fb"></div>
+    <div id="b2-next" style="display:none;margin-top:16px;text-align:right;">
+      <button class="btn btn-p" onclick="goToBlock(3)">Bloc 3 → Integra els components ›</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── PANEL 3 — REFLEXIÓ OBERTA (una emoció, tres components) -->
+<div class="block-panel" id="panel-3">
+  <div class="theory-card">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;"><span class="pill">BLOC 3</span><span style="color:#6b7280;font-size:0.85rem;">Teoria</span></div>
+    <h2 style="font-size:1.2rem;font-weight:800;margin-bottom:12px;">Una emoció, tres components</h2>
+    <p style="line-height:1.7;margin-bottom:12px;">Cada emoció activa els tres components de manera simultània, però la seva expressió pot variar molt d'una persona a una altra.</p>
+    <div class="note-box">⚠️ <strong>Important:</strong> Sentir una emoció <strong>no determina necessàriament una conducta concreta</strong>. La por, per exemple, pot generar evitació, bloqueig o parlar molt ràpid. La conducta és una tendència, no una inevitabilitat.</div>
+  </div>
+
+  <div class="activity-card">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><span style="font-size:1.1rem;">✏️</span><strong>Activitat 3 — Reflexiona i compara</strong></div>
+    <p style="color:#6b7280;font-size:0.85rem;margin-bottom:14px;">Selecciona una emoció, llegeix la situació i escriu el que creus que passa als tres components. Després prem «Veure resposta model» per comparar.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
+      <button class="em-tab em-on" onclick="showEmTab('por')">😨 Por</button>
+      <button class="em-tab" onclick="showEmTab('ira')">😡 Ira</button>
+      <button class="em-tab" onclick="showEmTab('tristesa')">😢 Tristesa</button>
+      <button class="em-tab" onclick="showEmTab('alegria')">😄 Alegria</button>
+    </div>
+
+    <!-- POR -->
+    <div class="em-panel ep-on" id="ep-por">
+      <div class="sb">Estàs fent una exposició oral. De sobte et quedes en blanc i no recordes el que venies a dir.</div>
+      <div style="display:grid;gap:10px;margin:12px 0;">
+        <div style="background:#fff0f0;border:1px solid #fca5a5;border-radius:10px;padding:14px;">
+          <div style="font-weight:700;color:#b91c1c;margin-bottom:8px;font-size:0.85rem;">🫀 Que creus que passa al cos?</div>
+          <textarea class="ta" id="ta-por-f" placeholder="Escriu aquí la teva resposta..."></textarea>
+          <div class="model-ans" id="ma-por-f">El cor s'accelera, apareix suor a les mans i tensió muscular. El sistema nerviós simpàtic s'activa automàticament preparant el cos per a una resposta d'emergència, encara que la situació sigui una exposició i no un perill físic real.</div>
+        </div>
+        <div style="background:#f5f3ff;border:1px solid #c4b5fd;border-radius:10px;padding:14px;">
+          <div style="font-weight:700;color:#5b21b6;margin-bottom:8px;font-size:0.85rem;">🧠 Quins pensaments creus que apareixen?</div>
+          <textarea class="ta" id="ta-por-c" placeholder="Escriu aquí la teva resposta..."></textarea>
+          <div class="model-ans" id="ma-por-c">Pensaments com «em quedaré en blanc» o «faré el ridícul davant de tots» apareixen de manera automàtica i amplifiquen l'emoció. El component cognitiu interpreta la situació com una amenaça.</div>
+        </div>
+        <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:14px;">
+          <div style="font-weight:700;color:#15803d;margin-bottom:8px;font-size:0.85rem;">🚶 Quina conducta podria aparèixer?</div>
+          <textarea class="ta" id="ta-por-k" placeholder="Escriu aquí la teva resposta..."></textarea>
+          <div class="model-ans" id="ma-por-k">La por pot generar conductes molt diverses: evitar la situació, bloquejar-se en silenci, parlar molt ràpid intentant acabar aviat, o demanar ajuda. Sentir por no determina una única conducta possible.</div>
+        </div>
+      </div>
+      <button class="btn btn-a" id="rev-por" onclick="b3Reveal('por')">Veure resposta model 👁️</button>
+    </div>
+
+    <!-- IRA -->
+    <div class="em-panel" id="ep-ira">
+      <div class="sb">Un company/a s'apropia d'una idea teva i la presenta com si fos seva davant del professor.</div>
+      <div style="display:grid;gap:10px;margin:12px 0;">
+        <div style="background:#fff0f0;border:1px solid #fca5a5;border-radius:10px;padding:14px;">
+          <div style="font-weight:700;color:#b91c1c;margin-bottom:8px;font-size:0.85rem;">🫀 Que creus que passa al cos?</div>
+          <textarea class="ta" id="ta-ira-f" placeholder="Escriu aquí la teva resposta..."></textarea>
+          <div class="model-ans" id="ma-ira-f">Augment de la pressió arterial, calor al rostre i músculs en tensió. El cos es prepara per a una resposta enèrgica davant d'allò que percep com una injustícia o violació d'un límit.</div>
+        </div>
+        <div style="background:#f5f3ff;border:1px solid #c4b5fd;border-radius:10px;padding:14px;">
+          <div style="font-weight:700;color:#5b21b6;margin-bottom:8px;font-size:0.85rem;">🧠 Quins pensaments creus que apareixen?</div>
+          <textarea class="ta" id="ta-ira-c" placeholder="Escriu aquí la teva resposta..."></textarea>
+          <div class="model-ans" id="ma-ira-c">Pensaments com «açò és injust» o «no hauria de passar» apareixen de manera automàtica. La ira filtra la percepció cap a la violació de normes i límits personals.</div>
+        </div>
+        <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:14px;">
+          <div style="font-weight:700;color:#15803d;margin-bottom:8px;font-size:0.85rem;">🚶 Quina conducta podria aparèixer?</div>
+          <textarea class="ta" id="ta-ira-k" placeholder="Escriu aquí la teva resposta..."></textarea>
+          <div class="model-ans" id="ma-ira-k">La ira pot generar tendències molt diverses: confrontar directament, callar, escriure un missatge, marxar... Sentir ira no implica necessàriament cridar o atacar. La conducta és una tendència, no un automatisme.</div>
+        </div>
+      </div>
+      <button class="btn btn-a" id="rev-ira" onclick="b3Reveal('ira')">Veure resposta model 👁️</button>
+    </div>
+
+    <!-- TRISTESA -->
+    <div class="em-panel" id="ep-tristesa">
+      <div class="sb">Un amic molt proper t'ha dit que l'any que ve es mudarà a una altra ciutat i que deixareu de veure-us cada dia.</div>
+      <div style="display:grid;gap:10px;margin:12px 0;">
+        <div style="background:#fff0f0;border:1px solid #fca5a5;border-radius:10px;padding:14px;">
+          <div style="font-weight:700;color:#b91c1c;margin-bottom:8px;font-size:0.85rem;">🫀 Que creus que passa al cos?</div>
+          <textarea class="ta" id="ta-tristesa-f" placeholder="Escriu aquí la teva resposta..."></textarea>
+          <div class="model-ans" id="ma-tristesa-f">Pesadesa, cansament i, sovint, llàgrimes. La tristesa és una emoció de baixa activació: el cos sembla alentar-se per processar la pèrdua, a diferència de la por o la ira que generen alta activació.</div>
+        </div>
+        <div style="background:#f5f3ff;border:1px solid #c4b5fd;border-radius:10px;padding:14px;">
+          <div style="font-weight:700;color:#5b21b6;margin-bottom:8px;font-size:0.85rem;">🧠 Quins pensaments creus que apareixen?</div>
+          <textarea class="ta" id="ta-tristesa-c" placeholder="Escriu aquí la teva resposta..."></textarea>
+          <div class="model-ans" id="ma-tristesa-c">Pensaments com «les coses mai tornaran a ser igual» o «perdré alguna cosa important». La tristesa filtra la percepció cap als aspectes perduts o negatius de la situació.</div>
+        </div>
+        <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:14px;">
+          <div style="font-weight:700;color:#15803d;margin-bottom:8px;font-size:0.85rem;">🚶 Quina conducta podria aparèixer?</div>
+          <textarea class="ta" id="ta-tristesa-k" placeholder="Escriu aquí la teva resposta..."></textarea>
+          <div class="model-ans" id="ma-tristesa-k">La tristesa tendeix a generar conductes de retirada i introspecció, però no és l'única resposta possible: algunes persones busquen suport social; d'altres prefereixen espai personal per processar.</div>
+        </div>
+      </div>
+      <button class="btn btn-a" id="rev-tristesa" onclick="b3Reveal('tristesa')">Veure resposta model 👁️</button>
+    </div>
+
+    <!-- ALEGRIA -->
+    <div class="em-panel" id="ep-alegria">
+      <div class="sb">T'acaben de dir que has estat seleccionat/da per a una beca que volies molt i per la qual havies treballat durant mesos.</div>
+      <div style="display:grid;gap:10px;margin:12px 0;">
+        <div style="background:#fff0f0;border:1px solid #fca5a5;border-radius:10px;padding:14px;">
+          <div style="font-weight:700;color:#b91c1c;margin-bottom:8px;font-size:0.85rem;">🫀 Que creus que passa al cos?</div>
+          <textarea class="ta" id="ta-alegria-f" placeholder="Escriu aquí la teva resposta..."></textarea>
+          <div class="model-ans" id="ma-alegria-f">Augment d'energia, sensació de lleugeresa i expressions espontànies com el somriure. El cos respon positivament a la recompensa amb alta activació agradable.</div>
+        </div>
+        <div style="background:#f5f3ff;border:1px solid #c4b5fd;border-radius:10px;padding:14px;">
+          <div style="font-weight:700;color:#5b21b6;margin-bottom:8px;font-size:0.85rem;">🧠 Quins pensaments creus que apareixen?</div>
+          <textarea class="ta" id="ta-alegria-c" placeholder="Escriu aquí la teva resposta..."></textarea>
+          <div class="model-ans" id="ma-alegria-c">Tendim a percebre la situació de manera optimista i a confiar més en les nostres capacitats. L'alegria amplia el repertori cognitiu: veiem més possibilitats i interpretem les ambigüitats favorablement.</div>
+        </div>
+        <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:14px;">
+          <div style="font-weight:700;color:#15803d;margin-bottom:8px;font-size:0.85rem;">🚶 Quina conducta podria aparèixer?</div>
+          <textarea class="ta" id="ta-alegria-k" placeholder="Escriu aquí la teva resposta..."></textarea>
+          <div class="model-ans" id="ma-alegria-k">L'alegria tendeix a generar conductes d'aproximació i compartir: volem comunicar el que sentim i celebrar-ho amb les persones del voltant. Aquesta és una de les seves funcions socials.</div>
+        </div>
+      </div>
+      <button class="btn btn-a" id="rev-alegria" onclick="b3Reveal('alegria')">Veure resposta model 👁️</button>
+    </div>
+
+    <div id="b3-note" style="display:none;margin-top:16px;" class="note-box">
+      💡 <strong>Ja pots continuar!</strong> T'animem a explorar les altres emocions abans de passar al Bloc 4 — però no és obligatori.
+    </div>
+    <div id="b3-next" style="display:none;margin-top:14px;text-align:right;">
+      <button class="btn btn-p" onclick="goToBlock(4)">Bloc 4 → Emocions i percepció ›</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── PANEL 4 — BOMBOLLES DE PENSAMENT ──────── -->
+<div class="block-panel" id="panel-4">
+  <div class="theory-card">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;"><span class="pill">BLOC 4</span><span style="color:#6b7280;font-size:0.85rem;">Teoria</span></div>
+    <h2 style="font-size:1.2rem;font-weight:800;margin-bottom:12px;">Emocions, atenció i percepció</h2>
+    <p style="line-height:1.7;margin-bottom:12px;">Les emocions modifiquen allò a què prestem atenció i la manera en que interpretem una situació.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div style="background:#fff0f0;border:1px solid #fca5a5;border-radius:10px;padding:12px;">
+        <div style="font-weight:700;color:#b91c1c;margin-bottom:6px;font-size:0.85rem;">Ansietat / Por</div>
+        <div style="font-size:0.82rem;color:#6b7280;line-height:1.5;">Tendim a prestar <strong>més atenció a les amenaces</strong> i a interpretar situacions ambigües de manera negativa.</div>
+      </div>
+      <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:12px;">
+        <div style="font-weight:700;color:#15803d;margin-bottom:6px;font-size:0.85rem;">Estat tranquil / positiu</div>
+        <div style="font-size:0.82rem;color:#6b7280;line-height:1.5;">Tendim a notar <strong>més els aspectes positius</strong> i a interpretar les ambigüitats de manera favorable.</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;background:#f5f3ff;border-radius:10px;padding:12px;font-size:0.85rem;color:#4c1d95;font-weight:600;">
+      📌 EMOCIÓ → ATENCIÓ → PERCEPCIÓ → INTERPRETACIÓ
+    </div>
+  </div>
+
+  <div class="activity-card">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;"><span style="font-size:1.1rem;">🎯</span><strong>Activitat 4 — Qui ho diria?</strong></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+      <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:14px;">
+        <div style="font-weight:700;color:#15803d;margin-bottom:6px;font-size:0.88rem;">😌 Persona A — tranquil·la</div>
+        <div style="font-size:0.83rem;color:#6b7280;">Porta un bon dia. Se sent segura en la seva relació amb l'amic.</div>
+      </div>
+      <div style="background:#fff0f0;border:1px solid #fca5a5;border-radius:10px;padding:14px;">
+        <div style="font-weight:700;color:#b91c1c;margin-bottom:6px;font-size:0.88rem;">😰 Persona B — molt ansiosa</div>
+        <div style="font-size:0.83rem;color:#6b7280;">Porta dies preocupada per si ha fet alguna cosa malament. Ja estava ansiosa abans de rebre el missatge.</div>
+      </div>
+    </div>
+    <div class="sb" style="text-align:center;font-size:1rem;"><strong>L'amic escriu: «Hem de parlar.»</strong></div>
+    <p style="font-size:0.88rem;color:#6b7280;margin:14px 0 10px;">Clica cada bombolla de pensament per assignar-la a la Persona A (😌) o a la Persona B (😰). Torna a clicar per canviar l'assignació.</p>
+    <div style="display:flex;align-items:center;gap:20px;font-size:0.8rem;margin-bottom:14px;flex-wrap:wrap;">
+      <span>1r clic → <span style="background:#f0fdf4;border:2px solid #16a34a;border-radius:6px;padding:2px 8px;color:#14532d;font-weight:700;">😌 A</span></span>
+      <span>2n clic → <span style="background:#fee2e2;border:2px solid #dc2626;border-radius:6px;padding:2px 8px;color:#7f1d1d;font-weight:700;">😰 B</span></span>
+      <span>3r clic → sense assignar</span>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;">
+      <div class="bubble" id="bub-0" onclick="b4Click(0)"><div class="bub-text">«Potser vol quedar per prendre alguna cosa»</div><div class="bub-lbl" style="font-size:0.75rem;font-weight:700;margin-top:6px;font-style:normal;">?</div></div>
+      <div class="bubble" id="bub-1" onclick="b4Click(1)"><div class="bub-text">«Alguna cosa ha anat malament...»</div><div class="bub-lbl" style="font-size:0.75rem;font-weight:700;margin-top:6px;font-style:normal;">?</div></div>
+      <div class="bubble" id="bub-2" onclick="b4Click(2)"><div class="bub-text">«Deu ser alguna tonteria sense importància»</div><div class="bub-lbl" style="font-size:0.75rem;font-weight:700;margin-top:6px;font-style:normal;">?</div></div>
+      <div class="bubble" id="bub-3" onclick="b4Click(3)"><div class="bub-text">«He fet alguna cosa per empipar-lo/la»</div><div class="bub-lbl" style="font-size:0.75rem;font-weight:700;margin-top:6px;font-style:normal;">?</div></div>
+      <div class="bubble" id="bub-4" onclick="b4Click(4)"><div class="bub-text">«Segurament és una bona notícia!»</div><div class="bub-lbl" style="font-size:0.75rem;font-weight:700;margin-top:6px;font-style:normal;">?</div></div>
+      <div class="bubble" id="bub-5" onclick="b4Click(5)"><div class="bub-text">«Ha d'estar enfadat/da amb mi»</div><div class="bub-lbl" style="font-size:0.75rem;font-weight:700;margin-top:6px;font-style:normal;">?</div></div>
+    </div>
+    <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">
+      <button class="btn btn-p" onclick="b4Check()">Comprova →</button>
+      <button class="btn btn-s" onclick="b4Reset()">Reinicia</button>
+    </div>
+    <div id="b4-fb" class="fb"></div>
+
+    <div id="b4-open" style="display:none;margin-top:18px;">
+      <p style="font-weight:700;font-size:0.9rem;margin-bottom:8px;">Reflexió: explica amb les teves paraules per qué la mateixa situació pot generar interpretacions tan diferents.</p>
+      <textarea class="ta" id="ta-b4" placeholder="La persona A, en un estat tranquil... la persona B, amb ansietat..."></textarea>
+      <button class="btn btn-p" style="margin-top:10px;" onclick="b4OpenCheck()">Continuar →</button>
+      <div id="b4-open-fb" class="fb"></div>
+    </div>
+    <div id="b4-next" style="display:none;margin-top:18px;text-align:right;">
+      <button class="btn btn-p" onclick="goToBlock(5)">Bloc 5 → Presa de decisions ›</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── PANEL 5 — PRESA DE DECISIONS ──────────── -->
+<div class="block-panel" id="panel-5">
+  <div class="theory-card">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;"><span class="pill">BLOC 5</span><span style="color:#6b7280;font-size:0.85rem;">Teoria</span></div>
+    <h2 style="font-size:1.2rem;font-weight:800;margin-bottom:12px;">Emocions i presa de decisions</h2>
+    <p style="line-height:1.7;margin-bottom:12px;">Les emocions influeixen en com prenem decisions. Sovint ho fan <strong>abans</strong> que el pensament conscient pugui intervenir plenament.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <div style="background:#fff;border:1px solid #ede9fe;border-radius:8px;padding:10px;font-size:0.83rem;">😡 <strong>Ira:</strong> decisions més impulsives i a curt termini.</div>
+      <div style="background:#fff;border:1px solid #ede9fe;border-radius:8px;padding:10px;font-size:0.83rem;">😨 <strong>Por:</strong> decisions evitatives o molt cauteloses.</div>
+      <div style="background:#fff;border:1px solid #ede9fe;border-radius:8px;padding:10px;font-size:0.83rem;">😢 <strong>Tristesa:</strong> decisions més pessimistes o prudents.</div>
+      <div style="background:#fff;border:1px solid #ede9fe;border-radius:8px;padding:10px;font-size:0.83rem;">😄 <strong>Alegria:</strong> decisions més obertes i optimistes.</div>
+    </div>
+  </div>
+
+  <div class="activity-card">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;"><span style="font-size:1.1rem;">🎯</span><strong>Activitat 5 — Analitza les decisions</strong></div>
+    <div class="sb">Un company/a et fa un comentari que consideres ofensiu davant d'altres persones.</div>
+    <p style="font-size:0.88rem;color:#6b7280;margin-bottom:14px;">Per a cada resposta possible, selecciona quina emoció o mecanisme la guia principalment.</p>
+
+    <div id="b5q1">
+      <div style="background:#fff0f0;border:1px solid #fca5a5;border-radius:10px;padding:14px;margin-bottom:10px;">
+        <div style="font-weight:700;margin-bottom:4px;font-size:0.9rem;">Resposta A: Respons immediatament de manera agressiva.</div>
+        <div style="font-size:0.82rem;color:#6b7280;">Quina emoció guia principalment aquesta decisió?</div>
+      </div>
+      <button class="cb" onclick="b5mc(this,1,true)">Ira impulsiva → l'emoció supera el control conscient</button>
+      <button class="cb" onclick="b5mc(this,1,false)">Por → la persona vol evitar el conflicte</button>
+      <button class="cb" onclick="b5mc(this,1,false)">Alegria → la persona ho resol amb facilitat</button>
+      <div id="b5f1" class="fb"></div>
+    </div>
+
+    <div id="b5q2" style="display:none;margin-top:16px;">
+      <div style="background:#f5f3ff;border:1px solid #c4b5fd;border-radius:10px;padding:14px;margin-bottom:10px;">
+        <div style="font-weight:700;margin-bottom:4px;font-size:0.9rem;">Resposta B: Evites completament la persona i no tornes a parlar-hi.</div>
+        <div style="font-size:0.82rem;color:#6b7280;">Quina emoció pot guiar principalment aquesta decisió?</div>
+      </div>
+      <button class="cb" onclick="b5mc(this,2,false)">Ira que busca confrontació directa</button>
+      <button class="cb" onclick="b5mc(this,2,true)">Por o ansietat → evitar el conflicte per protegir-se de més malestar</button>
+      <button class="cb" onclick="b5mc(this,2,false)">Alegria → la situació no l'ha afectat</button>
+      <div id="b5f2" class="fb"></div>
+    </div>
+
+    <div id="b5q3" style="display:none;margin-top:16px;">
+      <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:14px;margin-bottom:10px;">
+        <div style="font-weight:700;margin-bottom:4px;font-size:0.9rem;">Resposta C: Esperes uns minuts i després parles amb calma amb la persona.</div>
+        <div style="font-size:0.82rem;color:#6b7280;">Aquesta decisió mostra...</div>
+      </div>
+      <button class="cb" onclick="b5mc(this,3,false)">Que la persona no sent cap emoció</button>
+      <button class="cb" onclick="b5mc(this,3,false)">Que ha suprimit completament la seva ira</button>
+      <button class="cb" onclick="b5mc(this,3,true)">Que ha deixat activar l'emoció però ha esperat per prendre una decisió menys impulsiva</button>
+      <div id="b5f3" class="fb"></div>
+    </div>
+
+    <div id="b5-open" style="display:none;margin-top:16px;">
+      <div class="note-box" style="margin-bottom:12px;">💡 Cap de les tres respostes «correctes» és necessàriament la millor conducta. L'objectiu és entendre com les emocions influeixen en el procés de decisió.</div>
+      <p style="font-weight:700;font-size:0.9rem;margin-bottom:8px;">Reflexió: explica per què les tres respostes parteixen d'una emoció, tot i que generen conductes molt diferents.</p>
+      <textarea class="ta" id="ta-b5" placeholder="Les tres respostes parteixen de l'emoció, però..."></textarea>
+      <button class="btn btn-p" style="margin-top:10px;" onclick="b5OpenCheck()">Continuar →</button>
+      <div id="b5-open-fb" class="fb"></div>
+    </div>
+    <div id="b5-next" style="display:none;margin-top:18px;text-align:right;">
+      <button class="btn btn-p" onclick="goToBlock(6)">Bloc 6 → Funció social ›</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── PANEL 6 — FUNCIÓ SOCIAL (matching) ──────── -->
+<div class="block-panel" id="panel-6">
+  <div class="theory-card">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;"><span class="pill">BLOC 6</span><span style="color:#6b7280;font-size:0.85rem;">Teoria</span></div>
+    <h2 style="font-size:1.2rem;font-weight:800;margin-bottom:12px;">Funció social de les emocions</h2>
+    <p style="line-height:1.7;margin-bottom:12px;">Les emocions no són només internes. Comuniquen informació a les persones que ens envolten i regulen la nostra vida en societat.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div style="background:#f5f3ff;border:1px solid #ede9fe;border-radius:10px;padding:12px;"><div style="font-weight:700;font-size:0.82rem;margin-bottom:6px;">📡 Comuniquen</div><div style="font-size:0.8rem;color:#6b7280;line-height:1.5;">Expressions facials, gestos, to de veu i llenguatge corporal transmeten el que sentim sense paraules.</div></div>
+      <div style="background:#f5f3ff;border:1px solid #ede9fe;border-radius:10px;padding:12px;"><div style="font-weight:700;font-size:0.82rem;margin-bottom:6px;">🛑 Estableixen límits</div><div style="font-size:0.8rem;color:#6b7280;line-height:1.5;">La ira pot senyalitzar que s'ha creuat un límit personal i que cal corregir una conducta.</div></div>
+      <div style="background:#f5f3ff;border:1px solid #ede9fe;border-radius:10px;padding:12px;"><div style="font-weight:700;font-size:0.82rem;margin-bottom:6px;">🤝 Regulen normes</div><div style="font-size:0.8rem;color:#6b7280;line-height:1.5;">Ajuden a mantenir normes de convivència dins dels grups socials.</div></div>
+      <div style="background:#f5f3ff;border:1px solid #ede9fe;border-radius:10px;padding:12px;"><div style="font-weight:700;font-size:0.82rem;margin-bottom:6px;">💙 Empatia</div><div style="font-size:0.8rem;color:#6b7280;line-height:1.5;">Emocions com la gratitud o l'empatia faciliten la resolució de conflictes i la cooperació.</div></div>
+    </div>
+  </div>
+
+  <div class="activity-card">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;"><span style="font-size:1.1rem;">🎯</span><strong>Activitat 6 — Uneix la situació amb la seva funció social</strong></div>
+    <p style="color:#6b7280;font-size:0.85rem;margin-bottom:16px;">Clica una situació (esquerra, lila) i després clica la funció social que li correspon (dreta, taronja). Si l'encert és correcte, tots dos es marcaran en verd.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div>
+        <div style="font-weight:700;font-size:0.82rem;color:#5b21b6;margin-bottom:10px;text-align:center;">📌 Situació</div>
+        <div class="m-sit" id="sit-s1" onclick="b6ClickSit('s1')">1️⃣ 😊 Una persona somriu de manera genuïna en rebre una bona notícia davant dels amics.</div>
+        <div class="m-exp" id="exp-s1">✅ El somriure genuí comunica un estat intern positiu i facilita la connexió emocional amb els altres sense necessitat de paraules.</div>
+        <div class="m-sit" id="sit-s3" onclick="b6ClickSit('s3')">2️⃣ 👀 Després d'una discussió, una persona evita la mirada i parla molt menys del que acostuma.</div>
+        <div class="m-exp" id="exp-s3">✅ L'evitació de la mirada comunica que el conflicte no s'ha resolt i que la persona necessita espai o reconeixement.</div>
+        <div class="m-sit" id="sit-s4" onclick="b6ClickSit('s4')">3️⃣ 💙 Un company/a detecta que algú del grup es troba malament i, sense que li ho demanin, s'hi apropa per oferir suport.</div>
+        <div class="m-exp" id="exp-s4">✅ L'empatia activa la cooperació i el vincle emocional, facilitant la resolució col·lectiva del malestar i enfortint la relació.</div>
+        <div class="m-sit" id="sit-s2" onclick="b6ClickSit('s2')">4️⃣ 😤 Una persona frunç el front i adopta una postura tancada quan algú viola repetidament un límit personal seu.</div>
+        <div class="m-exp" id="exp-s2">✅ L'expressió de malestar senyalitza clarament que s'ha creuat un límit personal, promovent que l'altra persona corregeixi la seva conducta.</div>
+      </div>
+      <div>
+        <div style="font-weight:700;font-size:0.82rem;color:#b45309;margin-bottom:10px;text-align:center;">🔗 Funció social (barrejades)</div>
+        <div class="m-fun" id="fun-f3" onclick="b6ClickFun('f3')">A. 💬 Informar que el conflicte no s'ha resolt i que la persona necessita espai o reconeixement.</div>
+        <div class="m-fun" id="fun-f1" onclick="b6ClickFun('f1')">B. 📡 Comunicar un estat intern positiu i facilitar la connexió emocional amb els altres.</div>
+        <div class="m-fun" id="fun-f4" onclick="b6ClickFun('f4')">C. 🤝 Facilitar la cooperació i el vincle emocional per resoldre el malestar col·lectivament.</div>
+        <div class="m-fun" id="fun-f2" onclick="b6ClickFun('f2')">D. 🛑 Senyalitzar que s'ha creuat un límit personal i promoure la correcció de la conducta.</div>
+      </div>
+    </div>
+    <div id="b6-fb" class="fb" style="margin-top:14px;"></div>
+    <div id="b6-next" style="display:none;margin-top:16px;text-align:right;">
+      <button class="btn btn-p" onclick="goToBlock(7)">Bloc 7 → Repte final ›</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── PANEL 7 — REPTE FINAL + MAPA + TRANSFERÈNCIA -->
+<div class="block-panel" id="panel-7">
+  <!-- Case -->
+  <div class="theory-card" style="border-color:#fcd34d;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;"><span style="background:#854d0e;color:#fde68a;border-radius:8px;padding:4px 12px;font-size:0.75rem;font-weight:700;">REPTE FINAL</span><span style="color:#6b7280;font-size:0.85rem;">Bloc 7 — Integra tots els conceptes</span></div>
+    <h2 style="font-size:1.2rem;font-weight:800;margin-bottom:14px;">El cas d'en Alex</h2>
+    <div class="sb" style="border-left-color:#f59e0b;line-height:1.8;">L'Alex rep un missatge inesperat d'un amic amb qui ha tingut un conflicte recent. En llegir-lo <strong>sent tensió al cos</strong>, <strong>pensa immediatament que el seu amic deu estar enfadat amb ell</strong> i comença a preocupar-se. <strong>Decideix no respondre</strong> el missatge i, l'endemà, quan veu el seu amic a classe, <strong>evita parlar-hi</strong> i es col·loca al cantó oposat de l'aula.</div>
+  </div>
+
+  <div class="activity-card">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;"><span style="font-size:1.1rem;">🎯</span><strong>Analitza el cas pas a pas</strong></div>
+
+    <div id="b7q1">
+      <p style="font-weight:700;font-size:0.9rem;margin-bottom:10px;">1. Quines emocions podrien estar presents en l'Alex?</p>
+      <button class="cb" onclick="b7mc(this,1,false)">Alegria i entusiasme</button>
+      <button class="cb" onclick="b7mc(this,1,true)">Ansietat, por i possible tristesa pel conflicte preexistent</button>
+      <button class="cb" onclick="b7mc(this,1,false)">Ira intensa i ganes de confrontació</button>
+      <div id="b7f1" class="fb"></div>
+    </div>
+
+    <div id="b7q2" style="display:none;margin-top:16px;">
+      <p style="font-weight:700;font-size:0.9rem;margin-bottom:10px;">2. Quin és el component fisiològic que apareix al text?</p>
+      <button class="cb" onclick="b7mc(this,2,false)">Evitar parlar amb l'amic</button>
+      <button class="cb" onclick="b7mc(this,2,true)">La tensió al cos quan llegeix el missatge</button>
+      <button class="cb" onclick="b7mc(this,2,false)">Pensar que el seu amic deu estar enfadat</button>
+      <div id="b7f2" class="fb"></div>
+    </div>
+
+    <div id="b7q3" style="display:none;margin-top:16px;">
+      <p style="font-weight:700;font-size:0.9rem;margin-bottom:10px;">3. Quin és el component cognitiu que apareix?</p>
+      <button class="cb" onclick="b7mc(this,3,false)">La tensió corporal</button>
+      <button class="cb" onclick="b7mc(this,3,false)">No respondre el missatge</button>
+      <button class="cb" onclick="b7mc(this,3,true)">«El meu amic deu estar enfadat amb mi» — la interpretació automàtica</button>
+      <div id="b7f3" class="fb"></div>
+    </div>
+
+    <div id="b7q4" style="display:none;margin-top:16px;">
+      <p style="font-weight:700;font-size:0.9rem;margin-bottom:10px;">4. Quin és el component conductual?</p>
+      <button class="cb" onclick="b7mc(this,4,true)">No respondre el missatge i evitar l'amic l'endemà</button>
+      <button class="cb" onclick="b7mc(this,4,false)">La tensió al cos</button>
+      <button class="cb" onclick="b7mc(this,4,false)">La preocupació i els pensaments negatius</button>
+      <div id="b7f4" class="fb"></div>
+    </div>
+
+    <div id="b7q5" style="display:none;margin-top:16px;">
+      <p style="font-weight:700;font-size:0.9rem;margin-bottom:10px;">5. Com influeix l'emoció en la percepció del missatge?</p>
+      <button class="cb" onclick="b7mc(this,5,false)">L'Alex interpreta el missatge de manera neutra, sense cap biaix</button>
+      <button class="cb" onclick="b7mc(this,5,true)">L'ansietat fa que interpreti el missatge negativament, tot i que el contingut és ambigú</button>
+      <button class="cb" onclick="b7mc(this,5,false)">L'emoció no afecta la percepció; s'interpreta objectivament</button>
+      <div id="b7f5" class="fb"></div>
+    </div>
+
+    <div id="b7q6" style="display:none;margin-top:16px;">
+      <p style="font-weight:700;font-size:0.9rem;margin-bottom:10px;">6. Quina conseqüència pot tenir la conducta de l'Alex en la relació?</p>
+      <button class="cb" onclick="b7mc(this,6,false)">Cap, evitar el problema és sempre la millor estratègia</button>
+      <button class="cb" onclick="b7mc(this,6,true)">Pot agreujar el conflicte: l'amic pot percebre l'evitació com un rebuig, augmentant la distància</button>
+      <button class="cb" onclick="b7mc(this,6,false)">Resoldrà el conflicte automàticament si espera prou temps</button>
+      <div id="b7f6" class="fb"></div>
+    </div>
+
+    <div id="b7-open" style="display:none;margin-top:20px;">
+      <div style="background:#fffbeb;border:1px solid #fcd34d;border-radius:12px;padding:16px;">
+        <p style="font-weight:800;font-size:0.95rem;margin-bottom:10px;">🧩 Síntesi del cas</p>
+        <p style="color:#6b7280;font-size:0.88rem;margin-bottom:12px;">Explica amb les teves paraules com es relacionen en aquest cas el cos, els pensaments i la conducta de l'Alex. Utilitza els conceptes apresos.</p>
+        <textarea class="ta" id="ta-b7" style="min-height:110px;" placeholder="En el cas de l'Alex, la tensió al cos (component fisiològic)... el component cognitiu... la conducta d'evitació... les conseqüències socials..."></textarea>
+        <button class="btn btn-p" style="margin-top:10px;" onclick="b7OpenCheck()">Comprovar síntesi →</button>
+      </div>
+      <div id="b7-open-fb" class="fb"></div>
+
+      <div id="b7-finish-box" style="display:none;margin-top:20px;text-align:center;padding:26px;background:#f5f3ff;border-radius:12px;border:1px solid #ede9fe;">
+        <div style="font-size:2.5rem;margin-bottom:8px;">🎯</div>
+        <h3 style="font-size:1.25rem;font-weight:800;margin-bottom:8px;">Cas d'anàlisi completat!</h3>
+        <p style="color:#6b7280;max-width:480px;margin:0 auto 16px;font-size:0.9rem;line-height:1.6;">Has aplicat tots els conceptes clau al cas pràctic. Ara passa al <strong>Bloc 8 final</strong>: un repte interactiu on hauràs d'<strong>ordenar tots els conceptes i definicions de la teoria</strong> per poder desbloquejar i descarregar el teu document resum.</p>
+        <button class="btn btn-p" style="font-size:1rem;padding:12px 26px;" onclick="goToBlock(8)">Anar al Bloc 8: Ordenar l'Esquema Teòric ›</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── PANEL 8 — ORDENAR L'ESQUEMA TEÒRIC I DESCARREGAR ── -->
+<div class="block-panel" id="panel-8">
+  <div class="theory-card">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+      <span style="background:#059669;color:#fff;border-radius:8px;padding:4px 12px;font-size:0.75rem;font-weight:700;">BLOC 8 FINAL</span>
+      <span style="color:#6b7280;font-size:0.85rem;">Repte d'Integració Teòrica</span>
+    </div>
+    <h2 style="font-size:1.35rem;font-weight:800;margin-bottom:8px;">🧩 Ordena la Teoria per Desbloquejar l'Esquema</h2>
+    <p style="color:#6b7280;font-size:0.9rem;line-height:1.6;margin-bottom:14px;">Abans de poder descarregar l'apunt complet en document editable, has de demostrar que saps relacionar cada <strong>concepte teòric clau</strong> amb la seva <strong>definició exacta</strong> segons el temari de Batxillerat.</p>
+    <div class="sb" style="border-left-color:#059669;margin-bottom:16px;">
+      <strong>Com funciona:</strong> Clica una <strong>Targeta de Concepte</strong> (columna esquerra, color verd) i després clica la <strong>Definició / Funció</strong> corresponent (columna dreta, color gris/desordenada). Quan les tinguis totes ben emparellades, es desbloquejarà l'esquema sencer i el botó de descàrrega!
+    </div>
+  </div>
+
+  <!-- Activity area: Match definitions -->
+  <div class="activity-card" id="b8-puzzle-card" style="border-color:#059669;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+      <div style="font-weight:700;font-size:0.95rem;color:#065f46;">🎯 Emparella Conceptes i Definicions (6 parelles)</div>
+      <div id="b8-count-badge" style="background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46;padding:4px 10px;border-radius:20px;font-size:0.8rem;font-weight:700;">0 de 6 resolts</div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+      <!-- Concepts Column -->
+      <div>
+        <div style="font-weight:700;font-size:0.82rem;color:#065f46;margin-bottom:8px;text-align:center;">🏷️ CONCEPTES CLAU</div>
+        <div class="m-sit" id="c-def" onclick="b8ClickConcept('def')">1️⃣ Definició i Funció Adaptativa</div>
+        <div class="m-sit" id="c-fisio" onclick="b8ClickConcept('fisio')">2️⃣ Component Fisiològic</div>
+        <div class="m-sit" id="c-cogn" onclick="b8ClickConcept('cogn')">3️⃣ Component Cognitiu</div>
+        <div class="m-sit" id="c-cond" onclick="b8ClickConcept('cond')">4️⃣ Component Conductual</div>
+        <div class="m-sit" id="c-social" onclick="b8ClickConcept('social')">5️⃣ Aspectes Socials i Comunicació</div>
+        <div class="m-sit" id="c-conflict" onclick="b8ClickConcept('conflict')">6️⃣ Resolució de Conflictes i Límits</div>
+      </div>
+
+      <!-- Definitions Column (Scrambled) -->
+      <div>
+        <div style="font-weight:700;font-size:0.82rem;color:#b45309;margin-bottom:8px;text-align:center;">📖 DEFINICIONS I EXPLICACIONS (Desordenades)</div>
+        <div class="m-fun" id="d-cond" onclick="b8ClickDef('cond')">A. Accions visibles (expressions facials, gestos, veu) i predisposicions de comportament (tendències a actuar, com ara confrontar o evitar).</div>
+        <div class="m-fun" id="d-cogn" onclick="b8ClickDef('cogn')">B. Com les emocions influeixen en les idees, modulen l'atenció i percepció (biaix d'amenaces o optimisme) i guien la presa de decisions.</div>
+        <div class="m-fun" id="d-conflict" onclick="b8ClickDef('conflict')">C. Permeten marcar límits clars (com fa la ira) i promoure l'entesa pacífica i cooperació (com fan l'empatia i la gratitud).</div>
+        <div class="m-fun" id="d-def" onclick="b8ClickDef('def')">D. Processos psicològics automàtics sorgits de l'evolució per prendre decisions ràpides davant situacions de supervivència sense dependre del raonament conscient.</div>
+        <div class="m-fun" id="d-fisio" onclick="b8ClickDef('fisio')">E. Respostes automàtiques del cos (ritme cardíac, respiració, tensió muscular, hormones) que preparen ràpidament l'organisme per a l'acció.</div>
+        <div class="m-fun" id="d-social" onclick="b8ClickDef('social')">F. Expressen el que sentim de forma ràpida i no verbal (llenguatge corporal, rostre) i ajuden a regular les normes i convivència en el grup.</div>
+      </div>
+    </div>
+
+    <div id="b8-fb" class="fb" style="margin-top:14px;"></div>
+  </div>
+
+  <!-- Unlocked Schema & Download Section -->
+  <div id="b8-unlocked-container" style="display:none;margin-top:20px;animation:fadeIn 0.5s ease;">
+    <div style="background:#ecfdf5;border:2px solid #059669;border-radius:14px;padding:20px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;">
+      <div>
+        <div style="font-size:1.15rem;font-weight:800;color:#065f46;">🎉 Teoria completament ordenada i validada!</div>
+        <div style="color:#047857;font-size:0.88rem;margin-top:2px;">Ja pots consultar l'esquema complet i descarregar-lo al teu ordinador.</div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn btn-print" onclick="downloadSummaryDoc()">📥 Descarregar en Word (.doc)</button>
+        <button class="btn btn-s" onclick="window.print()">🖨️ Guardar en PDF</button>
+      </div>
+    </div>
+
+    <!-- Schema content container -->
+    <div class="theory-card" id="document-content" style="border:1.5px solid #d8b4fe;background:#fff;padding:28px;">
+      <div style="border-bottom:2px solid #7c3aed;padding-bottom:14px;margin-bottom:20px;">
+        <span style="font-size:0.75rem;font-weight:700;color:#7c3aed;text-transform:uppercase;letter-spacing:1.5px;">Esquema de Repàs · Batxillerat Psicologia</span>
+        <h1 style="font-size:1.6rem;font-weight:800;color:#1e1b4b;margin:4px 0;">Tema: Les Emocions</h1>
+        <p style="font-size:0.85rem;color:#6b7280;margin:0;">Resum conceptual complet basat en els apunts oficials de la matèria.</p>
+      </div>
+
+      <!-- 1. Definició -->
+      <div style="margin-bottom:22px;">
+        <h3 style="font-size:1.1rem;font-weight:800;color:#5b21b6;margin-bottom:8px;display:flex;align-items:center;gap:8px;">
+          <span>1.</span> Definició de les Emocions i Funció Adaptativa
+        </h3>
+        <div style="background:#f5f3ff;border-left:4px solid #7c3aed;border-radius:0 8px 8px 0;padding:12px 16px;font-size:0.88rem;line-height:1.7;">
+          <p><strong>Què són?</strong> Són processos psicològics automàtics que l'evolució ha desenvolupat per ajudar-nos a prendre decisions ràpidament, sense dependre exclusivament del raonament conscient.</p>
+          <p style="margin-top:6px;"><strong>Com actuen?</strong> Són respostes immediates al nostre entorn que ens ajuden a reaccionar de manera ràpida i eficient davant de situacions crucials per a la supervivència (enfrontar un perill, cercar allò que necessitem).</p>
+          <p style="margin-top:6px;"><strong>En els éssers humans:</strong> Tot i que van sorgir originalment per a respostes ràpides en mamífers, en els humans influeixen sovint en situacions on seria més adequat reflexionar i pensar de manera conscient.</p>
+        </div>
+      </div>
+
+      <!-- 2. Els Tres Components -->
+      <div style="margin-bottom:22px;">
+        <h3 style="font-size:1.1rem;font-weight:800;color:#5b21b6;margin-bottom:8px;display:flex;align-items:center;gap:8px;">
+          <span>2.</span> Els Tres Components de l'Experiència Emocional
+        </h3>
+        <p style="font-size:0.85rem;color:#6b7280;margin-bottom:10px;">Tota emoció s'articula mitjançant la interacció simultània de 3 components fonamentals:</p>
+        
+        <div style="display:grid;gap:12px;">
+          <!-- Fisiològic -->
+          <div style="background:#fff5f5;border:1px solid #fecaca;border-radius:10px;padding:14px;">
+            <div style="font-weight:700;color:#b91c1c;font-size:0.92rem;margin-bottom:4px;">🫀 A. Component Fisiològic (El Cos)</div>
+            <p style="font-size:0.85rem;color:#4b5563;line-height:1.6;margin:0;">
+              Respostes automàtiques i involuntàries del cos que preparen l'organisme per actuar ràpidament. Inclou l'activació del sistema nerviós autònom: augment del ritme cardíac, respiració accelerada, tensió muscular, sudoració o alliberament d'hormones (com l'adrenalina). Per exemple, davant la por el cos es prepara per a la lluita o la fugida.
+            </p>
+          </div>
+
+          <!-- Cognitiu -->
+          <div style="background:#f5f3ff;border:1px solid #ddd6fe;border-radius:10px;padding:14px;">
+            <div style="font-weight:700;color:#5b21b6;font-size:0.92rem;margin-bottom:4px;">🧠 B. Component Cognitiu (La Ment)</div>
+            <p style="font-size:0.85rem;color:#4b5563;line-height:1.6;margin:0;">
+              Manera com les emocions influeixen en les idees, judicis, pensaments i interpretacions de la informació. Té dues manifestacions cabdals:
+            </p>
+            <ul style="font-size:0.84rem;color:#4b5563;margin:6px 0 0 18px;line-height:1.6;">
+              <li><strong>Modulació de l'atenció i percepció:</strong> Si estem feliços, notem els aspectes positius; si estem ansiosos, l'atenció es dirigeix immediatament cap a possibles amenaces, interpretant situacions neutres o ambigües de manera negativa.</li>
+              <li><strong>Influència en la presa de decisions:</strong> La ira pot provocar decisions impulsives i precipitades; la tristesa condueix a decisions cauteloses o pessimistes.</li>
+            </ul>
+          </div>
+
+          <!-- Conductual -->
+          <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:14px;">
+            <div style="font-weight:700;color:#15803d;font-size:0.92rem;margin-bottom:4px;">🚶 C. Component Conductual (L'Acció)</div>
+            <p style="font-size:0.85rem;color:#4b5563;line-height:1.6;margin:0;">
+              Accions visibles i conductes observables generades per l'emoció, així com les <strong>tendències d'actuació</strong>:
+            </p>
+            <ul style="font-size:0.84rem;color:#4b5563;margin:6px 0 0 18px;line-height:1.6;">
+              <li><strong>Accions concretes:</strong> Expressions facials (somriure, frunzir el front), gestos, to de veu i reaccions (cridar, plorar, abraçar).</li>
+              <li><strong>Tendències a actuar:</strong> Predisposició de comportament (la ira predisposa a la confrontació; la por a l'evitació i recerca de seguretat). <em>Nota clau:</em> Sentir una emoció no determina obligatòriament una conducta única.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Aspectes Socials i Comunicació -->
+      <div style="margin-bottom:22px;">
+        <h3 style="font-size:1.1rem;font-weight:800;color:#5b21b6;margin-bottom:8px;display:flex;align-items:center;gap:8px;">
+          <span>3.</span> Aspectes Socials de les Emocions: Comunicació Interpersonal
+        </h3>
+        <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:14px;font-size:0.85rem;color:#78350f;line-height:1.65;">
+          <p><strong>1. Comuniquen el que sentim:</strong> Permeten expressar estats interns de forma instantània i no verbal (expressions facials, llenguatge corporal, to de veu).</p>
+          <p style="margin-top:6px;"><strong>2. Regulen les normes socials i el comportament:</strong> Estableixen normes i límits en les relacions. L'enuig o la indignació alerta que algú ha traspassat un límit personal, servint per corregir conductes i evitar conflictes futurs.</p>
+          <p style="margin-top:6px;"><strong>3. Afecten la resolució de conflictes:</strong>
+            Emocions com l'empatia o la gratitud promouen l'entesa pacífica i la cooperació. Alhora, l'expressió de la ira, tot i augmentar la tensió momentània, marca límits necessaris i fa conscient a l'altre de la gravetat d'un fet.</p>
+        </div>
+      </div>
+
+      <!-- 4. Preguntes d'Integració Respostes -->
+      <div style="margin-bottom:10px;">
+        <h3 style="font-size:1.1rem;font-weight:800;color:#5b21b6;margin-bottom:8px;display:flex;align-items:center;gap:8px;">
+          <span>4.</span> Guia Ràpida d'Integració (Per a Exàmens)
+        </h3>
+        <div style="border:1px solid #ede9fe;border-radius:10px;overflow:hidden;font-size:0.84rem;">
+          <div style="background:#f5f3ff;padding:10px 14px;font-weight:700;color:#4c1d95;">Preguntes claus de l'assignatura:</div>
+          <div style="padding:12px 14px;border-top:1px solid #ede9fe;line-height:1.6;">
+            <strong>• Quins són els tres components?</strong> Fisiològic (cos), Cognitiu (ment/percepció), Conductual (acció/expressió).<br>
+            <strong>• Com afecten l'atenció i decisió?</strong> Filtren allò que percebem (biaix d'amenaça o optimisme) i modulen si decidim impulsivament o amb cautela.<br>
+            <strong>• Quins avantatges presenten a nivell conductual?</strong> Resposta ràpida davant perills, comunicació interpersonal sense paraules, establiment de límits.<br>
+            <strong>• Quins desavantatges presenten?</strong> Poden provocar reaccions impulsives inapropiades en contextos que requereixen reflexió pausada o bloquejar la resolució de conflictes per biaixos catastròfics.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:20px;display:flex;justify-content:center;gap:12px;">
+      <button class="btn btn-print" onclick="downloadSummaryDoc()">📥 Descarregar en Document Word (.doc)</button>
+      <button class="btn btn-s" onclick="goToBlock(0)">🔄 Tornar a l'Inici</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- end container -->
+
+<script>
+// ════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════
+var currentBlock = 0;
+var xp = 0;
+
+// ════════════════════════════════════════
+// NAVIGATION
+// ════════════════════════════════════════
+function goToBlock(n) {
+  document.querySelectorAll('.block-panel').forEach(function(p) { p.classList.remove('active'); });
+  document.getElementById('panel-' + n).classList.add('active');
+  currentBlock = n;
+  updateProgress();
+  if (n === 2) loadScen(0);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function updateProgress() {
+  var pct = Math.round((currentBlock / 8) * 100);
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('block-label').textContent = currentBlock === 0 ? 'Introducció' : (currentBlock === 8 ? 'Bloc 8 (Final)' : 'Bloc ' + currentBlock + ' de 8');
+  document.getElementById('xp-display').textContent = '⭐ ' + xp + ' pts';
+  for (var i = 0; i <= 8; i++) {
+    var dot = document.getElementById('sd' + i);
+    if (!dot) continue;
+    dot.className = 'step-dot';
+    if (i < currentBlock) dot.classList.add('dd');
+    else if (i === currentBlock) dot.classList.add('dc');
+  }
+}
+
+function downloadSummaryDoc() {
+  var content = document.getElementById('document-content').innerHTML;
+  var fullHtml = '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Esquema - Les Emocions</title><style>' +
+    'body{font-family:Arial,sans-serif;line-height:1.6;color:#222;padding:30px;max-width:800px;margin:0 auto;}' +
+    'h1{color:#4c1d95;border-bottom:2px solid #7c3aed;padding-bottom:8px;font-size:24px;}' +
+    'h3{color:#5b21b6;margin-top:24px;font-size:18px;}' +
+    'p,li{font-size:14px;color:#333;}' +
+    'div{margin-bottom:12px;}' +
+    'ul{margin-top:4px;}' +
+    '</style></head><body>' + content + '</body></html>';
+
+  var blob = new Blob(['\ufeff' + fullHtml], { type: 'application/msword' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'Esquema_Emocions_Psicologia_Batxillerat.doc';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function addXP(pts) {
+  xp += pts;
+  document.getElementById('xp-display').textContent = '⭐ ' + xp + ' pts';
+}
+
+// ════════════════════════════════════════
+// BLOC 1
+// ════════════════════════════════════════
+var b1FB = {
+  1: {
+    y: '✅ <strong>Correcte!</strong> Quan sentim una amenaça inesperada, l\'emoció activa el cos automàticament per poder reaccionar sense haver de pensar. Aquesta és la <strong>funció adaptativa</strong> de les emocions: preparar-nos per actuar ràpidament davant situacions importants.',
+    n: '❌ <strong>Incorrecte.</strong> Les emocions sorgeixen <em>abans</em> que el pensament conscient pugui intervenir, preparant el cos per actuar de manera immediata. No és recordar el passat ni planificar.'
+  },
+  2: {
+    y: '✅ <strong>Correcte!</strong> Les emocions positives també tenen funció adaptativa: reforcen les conductes que han resultat positives i ens animen a continuar explorant i actuant.',
+    n: '❌ <strong>Incorrecte.</strong> Les emocions positives no bloquegen ni són purament plaents sense funció. <strong>Reforcen conductes</strong> i motiven a repetir allò que ha estat beneficiós.'
+  },
+  3: {
+    y: '✅ <strong>Correcte!</strong> La ira pot tenir una funció de <strong>regulació social i establiment de límits</strong>. Senyalitza que cal actuar per corregir la situació. Ho veurem en detall al Bloc 6.',
+    n: '❌ <strong>Incorrecte.</strong> La ira no genera passivitat: la seva funció és precisament <strong>activar</strong> la persona per defensar el seu espai personal i senyalitzar que s\'ha creuat un límit.'
+  }
+};
+
+function b1ans(btn, sit, isOk) {
+  var btns = document.querySelectorAll('[onclick*="b1ans(this,' + sit + '"]');
+  btns.forEach(function(b) { b.disabled = true; });
+  btn.classList.add(isOk ? 'ok' : 'err');
+  var fb = document.getElementById('b1f' + sit);
+  fb.className = 'fb show ' + (isOk ? 'fb-ok' : 'fb-warn');
+  fb.innerHTML = b1FB[sit][isOk ? 'y' : 'n'];
+  if (isOk) addXP(10);
+  setTimeout(function() {
+    if (sit < 3) {
+      var next = document.getElementById('b1s' + (sit + 1));
+      if (next) { next.style.display = 'block'; next.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
+    } else {
+      var nb = document.getElementById('b1-next');
+      if (nb) nb.style.display = 'block';
+    }
+  }, 1400);
+}
+
+// ════════════════════════════════════════
+// BLOC 2 — DRAG & DROP
+// ════════════════════════════════════════
+var draggedEl = null;
+var selDragEl = null;
+var curScen = 0;
+var b2Scenes = [
+  {
+    desc: 'La Júlia entra a classe i veu que l\'examen que no havia estudiat comença en 10 minuts. El cor li bat molt ràpid, pensa que suspendrà segur i decideix sortir al lavabo per evitar-ho.',
+    items: [
+      { text: 'El cor li bat molt ràpid', cat: 'fisio' },
+      { text: 'Pensa que suspendrà segur', cat: 'cogn' },
+      { text: 'Decideix sortir al lavabo', cat: 'cond' }
+    ]
+  },
+  {
+    desc: 'En Marc se sent molt orgullós quan el professor llegeix el seu treball en veu alta com a exemple. Sent calor al rostre, pensa que s\'ha esforçat molt i somriu sense poder evitar-ho.',
+    items: [
+      { text: 'Sent calor al rostre', cat: 'fisio' },
+      { text: 'Pensa que s\'ha esforçat molt', cat: 'cogn' },
+      { text: 'Somriu involuntàriament', cat: 'cond' }
+    ]
+  },
+  {
+    desc: 'La Nora s\'assabenta que no l\'han acceptat al grup de treball que volia. Nota un nus a la gola, pensa que no és prou bona i decideix no participar en cap altre projecte.',
+    items: [
+      { text: 'Nus a la gola', cat: 'fisio' },
+      { text: 'Pensa que no és prou bona', cat: 'cogn' },
+      { text: 'Decideix no participar en cap altre projecte', cat: 'cond' }
+    ]
+  }
+];
+
+function loadScen(idx) {
+  curScen = idx;
+  var sc = b2Scenes[idx];
+  document.getElementById('b2-desc').textContent = sc.desc;
+  // tabs
+  var tabs = document.querySelectorAll('.sc-tab');
+  tabs.forEach(function(t, i) { t.classList.toggle('sc-on', i === idx); });
+  // reset zones
+  ['fisio', 'cogn', 'cond'].forEach(function(z) {
+    var zone = document.getElementById('zone-' + z);
+    zone.innerHTML = '';
+    zone.className = 'dz';
+  });
+  document.getElementById('b2-fb').className = 'fb';
+  document.getElementById('b2-fb').innerHTML = '';
+  document.getElementById('b2-next').style.display = 'none';
+  selDragEl = null;
+  draggedEl = null;
+  // create items
+  var pool = document.getElementById('b2-pool');
+  pool.innerHTML = '';
+  sc.items.forEach(function(item) {
+    var el = document.createElement('div');
+    el.className = 'di';
+    el.textContent = item.text;
+    el.draggable = true;
+    el.dataset.cat = item.cat;
+    el.addEventListener('dragstart', function(e) {
+      draggedEl = el;
+      el.classList.add('dragging');
+      e.dataTransfer.setData('text', item.cat);
+    });
+    el.addEventListener('dragend', function() { el.classList.remove('dragging'); draggedEl = null; });
+    el.addEventListener('click', function() { clickItem(el); });
+    pool.appendChild(el);
+  });
+}
+
+function clickItem(el) {
+  if (selDragEl === el) { el.classList.remove('sel'); selDragEl = null; return; }
+  document.querySelectorAll('.di').forEach(function(d) { d.classList.remove('sel'); });
+  selDragEl = el;
+  el.classList.add('sel');
+}
+
+function allowDrop(e) { e.preventDefault(); e.currentTarget.classList.add('over'); }
+function handleDrop(e, zone) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('over');
+  var item = draggedEl;
+  if (!item) return;
+  item.classList.remove('sel', 'dragging');
+  item.draggable = false;
+  item.style.cursor = 'default';
+  item.removeEventListener('click', clickItem);
+  e.currentTarget.appendChild(item);
+  draggedEl = null;
+}
+
+function clickZone(zone) {
+  var zoneEl = document.getElementById('zone-' + zone);
+  zoneEl.classList.remove('over');
+  if (!selDragEl) return;
+  selDragEl.classList.remove('sel');
+  selDragEl.draggable = false;
+  selDragEl.style.cursor = 'default';
+  zoneEl.appendChild(selDragEl);
+  selDragEl = null;
+}
+
+function checkDD() {
+  var pool = document.getElementById('b2-pool');
+  if (pool.children.length > 0) {
+    var fb = document.getElementById('b2-fb');
+    fb.className = 'fb show fb-warn';
+    fb.innerHTML = '⚠️ Col·loca tots els elements abans de comprovar.';
+    return;
+  }
+  var allOk = true;
+  var wrong = [];
+  ['fisio', 'cogn', 'cond'].forEach(function(zone) {
+    var zoneEl = document.getElementById('zone-' + zone);
+    var items = zoneEl.querySelectorAll('.di');
+    var zoneOk = true;
+    items.forEach(function(item) {
+      if (item.dataset.cat !== zone) { allOk = false; zoneOk = false; wrong.push('"' + item.textContent + '"'); }
+    });
+    zoneEl.classList.remove('dz-ok', 'dz-err');
+    zoneEl.classList.add(zoneOk ? 'dz-ok' : 'dz-err');
+  });
+  var fb = document.getElementById('b2-fb');
+  if (allOk) {
+    fb.className = 'fb show fb-ok';
+    fb.innerHTML = '✅ <strong>Excel·lent!</strong> Has classificat correctament els tres components.<br><br>🫀 <strong>Fisiològic:</strong> reaccions automàtiques del cos.<br>🧠 <strong>Cognitiu:</strong> pensaments i interpretacions.<br>🚶 <strong>Conductual:</strong> accions i tendències a actuar.';
+    addXP(15);
+    setTimeout(function() { document.getElementById('b2-next').style.display = 'block'; }, 1000);
+  } else {
+    fb.className = 'fb show fb-warn';
+    fb.innerHTML = '⚠️ Alguns elements no estan al lloc correcte: ' + wrong.join(', ') + '. Recorda: el <strong>fisiològic</strong> és allò que passa al cos; el <strong>cognitiu</strong>, allò que pensem; el <strong>conductual</strong>, allò que fem o tendim a fer.';
+  }
+}
+
+function resetDD() { loadScen(curScen); }
+
+// ════════════════════════════════════════
+// BLOC 3 — REFLEXIÓ OBERTA
+// ════════════════════════════════════════
+var b3Reveals = 0;
+
+function showEmTab(id) {
+  document.querySelectorAll('.em-panel').forEach(function(p) { p.classList.remove('ep-on'); });
+  var panel = document.getElementById('ep-' + id);
+  if (panel) panel.classList.add('ep-on');
+  document.querySelectorAll('.em-tab').forEach(function(t) {
+    var matches = t.getAttribute('onclick') && t.getAttribute('onclick').indexOf("'" + id + "'") !== -1;
+    t.classList.toggle('em-on', matches);
+  });
+}
+
+function b3Reveal(emotion) {
+  var btn = document.getElementById('rev-' + emotion);
+  if (btn) btn.disabled = true;
+  ['f', 'c', 'k'].forEach(function(comp) {
+    var ma = document.getElementById('ma-' + emotion + '-' + comp);
+    if (ma) ma.classList.add('ans-on');
+  });
+  b3Reveals++;
+  addXP(10);
+  if (b3Reveals >= 1) {
+    var note = document.getElementById('b3-note');
+    var nb = document.getElementById('b3-next');
+    if (note) note.style.display = 'block';
+    if (nb) nb.style.display = 'block';
+  }
+}
+
+// ════════════════════════════════════════
+// BLOC 4 — BOMBOLLES DE PENSAMENT
+// ════════════════════════════════════════
+var b4Data = [
+  { correct: 'A' }, // 0: "Potser vol quedar..."
+  { correct: 'B' }, // 1: "Alguna cosa ha anat malament..."
+  { correct: 'A' }, // 2: "Deu ser una tonteria..."
+  { correct: 'B' }, // 3: "He fet alguna cosa..."
+  { correct: 'A' }, // 4: "Segurament és una bona notícia!"
+  { correct: 'B' }  // 5: "Ha d'estar enfadat..."
+];
+var b4State = [null, null, null, null, null, null]; // null | 'A' | 'B'
+
+function b4Click(idx) {
+  var el = document.getElementById('bub-' + idx);
+  var lbl = el.querySelector('.bub-lbl');
+  var cur = b4State[idx];
+  if (!cur) {
+    b4State[idx] = 'A';
+    el.className = 'bubble bA';
+    lbl.textContent = '😌 Persona A';
+  } else if (cur === 'A') {
+    b4State[idx] = 'B';
+    el.className = 'bubble bB';
+    lbl.textContent = '😰 Persona B';
+  } else {
+    b4State[idx] = null;
+    el.className = 'bubble';
+    lbl.textContent = '?';
+  }
+}
+
+function b4Check() {
+  var allAssigned = b4State.every(function(s) { return s !== null; });
+  if (!allAssigned) {
+    var fb = document.getElementById('b4-fb');
+    fb.className = 'fb show fb-warn';
+    fb.innerHTML = '⚠️ Assigna totes les bombolles (A o B) abans de comprovar.';
+    return;
+  }
+  var correct = 0;
+  b4State.forEach(function(s, i) {
+    var el = document.getElementById('bub-' + i);
+    el.onclick = null;
+    if (s === b4Data[i].correct) {
+      el.className = 'bubble b-ok';
+      correct++;
+    } else {
+      el.className = 'bubble b-err';
+    }
+  });
+  var fb = document.getElementById('b4-fb');
+  if (correct === 6) {
+    fb.className = 'fb show fb-ok';
+    fb.innerHTML = '✅ <strong>Perfecte! 6 de 6.</strong> Has identificat correctament els pensaments de cada persona. El camí és clar: <strong>EMOCIÓ → ATENCIÓ → PERCEPCIÓ → INTERPRETACIÓ</strong>. La mateixa situació ambigua genera interpretacions radicalment diferents depenent de l\'estat emocional previ.';
+    addXP(20);
+  } else {
+    fb.className = 'fb show fb-warn';
+    fb.innerHTML = '⚠️ Has encertat <strong>' + correct + ' de 6</strong>. Els pensaments marcats en vermell pertanyen a l\'altra persona. Recorda: una persona ansiosa (B) tendeix a interpretar les ambigüitats de manera negativa; una persona tranquil·la (A) tendeix a fer-ho de manera neutral o positiva.';
+    addXP(5);
+  }
+  setTimeout(function() { document.getElementById('b4-open').style.display = 'block'; }, 1200);
+}
+
+function b4Reset() {
+  b4State = [null, null, null, null, null, null];
+  for (var i = 0; i < 6; i++) {
+    var el = document.getElementById('bub-' + i);
+    el.className = 'bubble';
+    el.querySelector('.bub-lbl').textContent = '?';
+    (function(idx) { el.onclick = function() { b4Click(idx); }; })(i);
+  }
+  document.getElementById('b4-fb').className = 'fb';
+  document.getElementById('b4-open').style.display = 'none';
+  document.getElementById('b4-next').style.display = 'none';
+}
+
+function b4OpenCheck() {
+  var txt = document.getElementById('ta-b4').value.trim();
+  var fb = document.getElementById('b4-open-fb');
+  if (txt.length < 20) { fb.className = 'fb show fb-warn'; fb.innerHTML = '⚠️ Elabora una mica més la teva resposta.'; return; }
+  fb.className = 'fb show fb-info';
+  fb.innerHTML = '💡 <strong>Resposta model:</strong> La mateixa situació («Hem de parlar») és ambigua. L\'emoció prèvia de cada persona actua com un <em>filtre</em> que dirigeix l\'atenció cap a determinats aspectes. La Persona A, tranquil·la, no cerca amenaces i interpreta el missatge obertament. La Persona B, ansiosa, focalitza l\'atenció en la possibilitat d\'un conflicte i confirma els seus temors. Camí: <strong>EMOCIÓ → ATENCIÓ → PERCEPCIÓ → INTERPRETACIÓ</strong>.';
+  addXP(10);
+  setTimeout(function() { document.getElementById('b4-next').style.display = 'block'; }, 1200);
+}
+
+// ════════════════════════════════════════
+// BLOC 5 — PRESA DE DECISIONS
+// ════════════════════════════════════════
+var b5FB = {
+  1: {
+    y: '✅ <strong>Correcte!</strong> La ira intensa pot superar la capacitat de raonament conscient i generar respostes impulsives. Quan l\'emoció és molt intensa, el component cognitiu (avaluació, planificació) queda relegat a un segon pla.',
+    n: '❌ <strong>Incorrecte.</strong> Respondre de manera immediata i agressiva és típic d\'una ira molt intensa que supera el control conscient, no d\'un estat de por o alegria.'
+  },
+  2: {
+    y: '✅ <strong>Correcte!</strong> Evitar el conflicte pot ser una resposta guiada per la por o l\'ansietat: l\'emoció genera la tendència d\'allunyar-se de tot allò que percep com una amenaça, tot i que a llarg termini pot crear més problemes.',
+    n: '❌ <strong>Incorrecte.</strong> Evitar sistemàticament una persona és una resposta d\'evitació, típica de la por o l\'ansietat davant el conflicte.'
+  },
+  3: {
+    y: '✅ <strong>Excel·lent!</strong> Esperar uns minuts no significa no sentir l\'emoció: significa que la persona ha deixat que l\'activació inicial s\'assentés i ha donat temps al component cognitiu per intervenir. <strong>L\'emoció sempre hi és; el que canvia és quan i com s\'actua.</strong>',
+    n: '❌ <strong>Incorrecte.</strong> No és que la persona no senti l\'emoció. Sentir una emoció i actuar impulsivament no és el mateix. Esperar permet que el component cognitiu intervingui.'
+  }
+};
+
+function b5mc(btn, q, isOk) {
+  var container = btn.parentElement;
+  container.querySelectorAll('.cb').forEach(function(b) { b.disabled = true; });
+  btn.classList.add(isOk ? 'ok' : 'err');
+  var fb = document.getElementById('b5f' + q);
+  fb.className = 'fb show ' + (isOk ? 'fb-ok' : 'fb-warn');
+  fb.innerHTML = b5FB[q][isOk ? 'y' : 'n'];
+  if (isOk) addXP(10);
+  setTimeout(function() {
+    if (q < 3) {
+      var next = document.getElementById('b5q' + (q + 1));
+      if (next) next.style.display = 'block';
+    } else {
+      var op = document.getElementById('b5-open');
+      if (op) op.style.display = 'block';
+    }
+  }, 1400);
+}
+
+function b5OpenCheck() {
+  var txt = document.getElementById('ta-b5').value.trim();
+  var fb = document.getElementById('b5-open-fb');
+  if (txt.length < 20) { fb.className = 'fb show fb-warn'; fb.innerHTML = '⚠️ Intenta elaborar una mica més.'; return; }
+  fb.className = 'fb show fb-info';
+  fb.innerHTML = '💡 <strong>Punt clau:</strong> Les tres respostes parteixen d\'una emoció real. La diferència no és «sentir o no sentir», sinó <strong>quan i com s\'actua</strong>. L\'emoció sempre influeix en la decisió, però el component cognitiu pot modular la resposta si se li dóna temps per intervenir.';
+  addXP(10);
+  setTimeout(function() { document.getElementById('b5-next').style.display = 'block'; }, 1200);
+}
+
+// ════════════════════════════════════════
+// BLOC 6 — MATCHING
+// ════════════════════════════════════════
+var b6Correct = { s1: 'f1', s2: 'f2', s3: 'f3', s4: 'f4' };
+var b6Exp = {
+  's1-f1': '✅ El somriure genuí comunica un estat intern positiu i facilita la connexió emocional amb els altres sense necessitat de paraules.',
+  's2-f2': '✅ L\'expressió de malestar senyalitza clarament que s\'ha creuat un límit personal, promovent que l\'altra persona corregeixi la seva conducta.',
+  's3-f3': '✅ L\'evitació de la mirada comunica que el conflicte no s\'ha resolt i que la persona necessita espai o reconeixement.',
+  's4-f4': '✅ L\'empatia activa la cooperació i el vincle emocional, facilitant la resolució col·lectiva del malestar i enfortint la relació.'
+};
+var b6SelSit = null;
+var b6SelFun = null;
+var b6Matched = {};
+var b6Count = 0;
+
+function b6ClickSit(id) {
+  if (b6Matched[id]) return;
+  if (b6SelSit) {
+    var prev = document.getElementById('sit-' + b6SelSit);
+    if (prev) prev.classList.remove('m-sel');
+  }
+  b6SelSit = id;
+  document.getElementById('sit-' + id).classList.add('m-sel');
+  if (b6SelFun) b6TryMatch();
+}
+
+function b6ClickFun(id) {
+  var alreadyMatched = Object.values(b6Matched).some(function(v) { return v === id; });
+  if (alreadyMatched) return;
+  if (b6SelFun) {
+    var prev = document.getElementById('fun-' + b6SelFun);
+    if (prev) prev.classList.remove('m-sel');
+  }
+  b6SelFun = id;
+  document.getElementById('fun-' + id).classList.add('m-sel');
+  if (b6SelSit) b6TryMatch();
+}
+
+function b6TryMatch() {
+  var sit = b6SelSit;
+  var fun = b6SelFun;
+  if (!sit || !fun) return;
+  var sitEl = document.getElementById('sit-' + sit);
+  var funEl = document.getElementById('fun-' + fun);
+  if (b6Correct[sit] === fun) {
+    b6Matched[sit] = fun;
+    b6Count++;
+    sitEl.classList.add('m-done'); sitEl.classList.remove('m-sel');
+    funEl.classList.add('m-done'); funEl.classList.remove('m-sel');
+    var expEl = document.getElementById('exp-' + sit);
+    if (expEl) { expEl.textContent = b6Exp[sit + '-' + fun]; expEl.classList.add('exp-on'); }
+    addXP(8);
+    if (b6Count === 4) {
+      var fb = document.getElementById('b6-fb');
+      fb.className = 'fb show fb-ok';
+      fb.innerHTML = '✅ <strong>Perfecte! Has relacionat correctament les 4 situacions amb les seves funcions socials.</strong> Les emocions comuniquen, estableixen límits, regulen normes i fomenten l\'empatia i la cooperació.';
+      addXP(10);
+      setTimeout(function() { document.getElementById('b6-next').style.display = 'block'; }, 800);
+    }
+  } else {
+    sitEl.classList.add('m-flash'); funEl.classList.add('m-flash');
+    setTimeout(function() {
+      sitEl.classList.remove('m-flash', 'm-sel');
+      funEl.classList.remove('m-flash', 'm-sel');
+    }, 700);
+  }
+  b6SelSit = null;
+  b6SelFun = null;
+}
+
+// ════════════════════════════════════════
+// BLOC 7 — CAS D'ANÀLISI
+// ════════════════════════════════════════
+var b7FB = {
+  1: {
+    y: '✅ <strong>Correcte!</strong> L\'Alex experimenta principalment ansietat (activació davant d\'una situació percebuda com a amenaça) i possiblement tristesa relacionada amb el conflicte preexistent.',
+    n: '❌ <strong>Incorrecte.</strong> El context (conflicte previ, preocupació, tensió) apunta a ansietat i/o por, no a alegria ni a ira confrontacional.'
+  },
+  2: {
+    y: '✅ <strong>Correcte!</strong> La tensió al cos és una resposta automàtica del sistema nerviós. És el component fisiològic: ocorre sense que l\'Alex ho decideixi conscientment.',
+    n: '❌ <strong>Incorrecte.</strong> El component fisiològic és allò que passa al cos de manera automàtica. Evitar l\'amic és conductual; pensar que està enfadat és cognitiu. La tensió corporal és fisiològica.'
+  },
+  3: {
+    y: '✅ <strong>Correcte!</strong> «El meu amic deu estar enfadat» és la interpretació automàtica del missatge. Aquesta és la dimensió cognitiva: el pensament i la manera de percebre la situació, influïts per l\'emoció prèvia.',
+    n: '❌ <strong>Incorrecte.</strong> El component cognitiu és el pensament o la interpretació. La tensió és fisiològica; no respondre és conductual. La interpretació («deu estar enfadat») és el component cognitiu.'
+  },
+  4: {
+    y: '✅ <strong>Correcte!</strong> No respondre el missatge i evitar l\'amic l\'endemà són accions visibles i tendències conductuals. L\'Alex actua d\'una manera concreta com a resposta a l\'emoció.',
+    n: '❌ <strong>Incorrecte.</strong> El component conductual és allò que fem: les accions visibles. La tensió és fisiològica; la preocupació és cognitiva. Les conductes d\'evitació (no respondre, canviar de lloc) formen el component conductual.'
+  },
+  5: {
+    y: '✅ <strong>Correcte!</strong> Aquí veiem el camí EMOCIÓ → ATENCIÓ → PERCEPCIÓ → INTERPRETACIÓ. L\'Alex, a causa de l\'ansietat, interpreta un missatge ambigú de manera negativa. Un missatge neutral es converteix en una confirmació del pitjor escenari.',
+    n: '❌ <strong>Incorrecte.</strong> L\'emoció sempre influeix en la percepció. L\'ansietat de l\'Alex fa que interpreti negativament un missatge que podria ser neutral o fins i tot positiu.'
+  },
+  6: {
+    y: '✅ <strong>Excel·lent!</strong> L\'evitació pot semblar una solució a curt termini, però a llarg termini pot agreujar el conflicte. L\'amic pot interpretar l\'evitació com un rebuig, cosa que pot augmentar la distància.',
+    n: '❌ <strong>Incorrecte.</strong> L\'evitació no resol els conflictes: els posposa i sovint els agreuja. L\'amic pot percebre l\'evitació negativament, deteriorant la relació.'
+  }
+};
+
+function b7mc(btn, q, isOk) {
+  var container = btn.parentElement;
+  container.querySelectorAll('.cb').forEach(function(b) { b.disabled = true; });
+  btn.classList.add(isOk ? 'ok' : 'err');
+  var fb = document.getElementById('b7f' + q);
+  fb.className = 'fb show ' + (isOk ? 'fb-ok' : 'fb-warn');
+  fb.innerHTML = b7FB[q][isOk ? 'y' : 'n'];
+  if (isOk) addXP(15);
+  setTimeout(function() {
+    if (q < 6) {
+      var next = document.getElementById('b7q' + (q + 1));
+      if (next) next.style.display = 'block';
+    } else {
+      var op = document.getElementById('b7-open');
+      if (op) op.style.display = 'block';
+    }
+  }, 1400);
+}
+
+function b7OpenCheck() {
+  var txt = document.getElementById('ta-b7').value.trim();
+  var fb = document.getElementById('b7-open-fb');
+  if (txt.length < 40) { fb.className = 'fb show fb-warn'; fb.innerHTML = '⚠️ Intenta elaborar una resposta més completa. Menciona els tres components i les conseqüències socials.'; return; }
+  fb.className = 'fb show fb-info';
+  fb.innerHTML = '💡 <strong>Resposta model:</strong> La tensió al cos (component fisiològic) és la primera resposta automàtica. Aquesta activació acompanya un pensament negatiu immediat (component cognitiu), influït per l\'ansietat prèvia. Ambdós components condueixen a la conducta d\'evitació (component conductual). Aquesta conducta té conseqüències socials: el conflicte no es resol i pot agreujar-se perquè l\'amic pot interpretar l\'evitació com un rebuig.';
+  addXP(20);
+  setTimeout(function() {
+    var fbBox = document.getElementById('b7-finish-box');
+    if (fbBox) { fbBox.style.display = 'block'; fbBox.scrollIntoView({ behavior: 'smooth' }); }
+  }, 1200);
+}
+
+// ════════════════════════════════════════
+// BLOC 8 — REPTE D'INTEGRACIÓ TEÒRICA
+// ════════════════════════════════════════
+var b8Correct = {
+  def: 'def',
+  fisio: 'fisio',
+  cogn: 'cogn',
+  cond: 'cond',
+  social: 'social',
+  conflict: 'conflict'
+};
+
+var b8Exp = {
+  def: '✅ <strong>Definició i Funció Adaptativa:</strong> Processos automàtics sorgits per prendre decisions ràpides davant situacions de supervivència sense dependre del raonament conscient.',
+  fisio: '✅ <strong>Component Fisiològic:</strong> Respostes corporals automàtiques (cor, respiració, tensió, hormones) que preparen l\'organisme per actuar.',
+  cogn: '✅ <strong>Component Cognitiu:</strong> Modulació de l\'atenció/percepció (filtre d\'amenaces o optimisme) i orientació de la presa de decisions.',
+  cond: '✅ <strong>Component Conductual:</strong> Accions visibles (rostre, gestos, veu) i tendències de comportament (confrontar, evitar, retirar-se).',
+  social: '✅ <strong>Aspectes Socials i Comunicació:</strong> Expressió no verbal ràpida del que sentim i regulació de les normes socials de convivència.',
+  conflict: '✅ <strong>Resolució de Conflictes i Límits:</strong> Marcar límits clars (ira) i fomentar la cooperació pacífica (empatia i gratitud).'
+};
+
+var b8SelConcept = null;
+var b8SelDef = null;
+var b8Matched = {};
+var b8Count = 0;
+
+function b8ClickConcept(id) {
+  if (b8Matched[id]) return;
+  if (b8SelConcept) {
+    var prev = document.getElementById('c-' + b8SelConcept);
+    if (prev) prev.classList.remove('m-sel');
+  }
+  b8SelConcept = id;
+  document.getElementById('c-' + id).classList.add('m-sel');
+  if (b8SelDef) b8TryMatch();
+}
+
+function b8ClickDef(id) {
+  var alreadyMatched = Object.values(b8Matched).some(function(v) { return v === id; });
+  if (alreadyMatched) return;
+  if (b8SelDef) {
+    var prev = document.getElementById('d-' + b8SelDef);
+    if (prev) prev.classList.remove('m-sel');
+  }
+  b8SelDef = id;
+  document.getElementById('d-' + id).classList.add('m-sel');
+  if (b8SelConcept) b8TryMatch();
+}
+
+function b8TryMatch() {
+  var cId = b8SelConcept;
+  var dId = b8SelDef;
+  if (!cId || !dId) return;
+
+  var cEl = document.getElementById('c-' + cId);
+  var dEl = document.getElementById('d-' + dId);
+
+  if (b8Correct[cId] === dId) {
+    b8Matched[cId] = dId;
+    b8Count++;
+    cEl.classList.add('m-done'); cEl.classList.remove('m-sel');
+    dEl.classList.add('m-done'); dEl.classList.remove('m-sel');
+
+    var badge = document.getElementById('b8-count-badge');
+    if (badge) badge.textContent = b8Count + ' de 6 resolts';
+
+    var fb = document.getElementById('b8-fb');
+    fb.className = 'fb show fb-ok';
+    fb.innerHTML = b8Exp[cId];
+    addXP(10);
+
+    if (b8Count === 6) {
+      setTimeout(function() {
+        var unl = document.getElementById('b8-unlocked-container');
+        if (unl) {
+          unl.style.display = 'block';
+          unl.scrollIntoView({ behavior: 'smooth' });
+        }
+        fb.innerHTML = '🎉 <strong>Enhorabona! Has completat i validat tots els conceptes clau de la teoria.</strong> L\'esquema complet i els botons de descàrrega s\'acaben de desbloquejar a sota.';
+        addXP(30);
+        updateProgress();
+      }, 900);
+    }
+  } else {
+    cEl.classList.add('m-flash'); dEl.classList.add('m-flash');
+    var fb = document.getElementById('b8-fb');
+    fb.className = 'fb show fb-warn';
+    fb.innerHTML = '⚠️ Aquesta definició no correspon a aquest concepte. Revisa bé els apunts i torna-ho a provar.';
+    setTimeout(function() {
+      cEl.classList.remove('m-flash', 'm-sel');
+      dEl.classList.remove('m-flash', 'm-sel');
+    }, 700);
+  }
+
+  b8SelConcept = null;
+  b8SelDef = null;
+}
+
+// ════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════
+loadScen(0);
+updateProgress();
+</script>
+</body>
+</html>
