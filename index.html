@@ -100,6 +100,125 @@
     ::-webkit-scrollbar-thumb { background:#c4b5fd; border-radius:3px; }
     .btn-print { background:#059669; color:#fff; }
     .btn-print:hover { background:#047857; transform:translateY(-1px); }
+    /* Admin & Tabs Navigation */
+    .btn-admin {
+      background: #ede9fe;
+      color: #6d28d9;
+      border: 1.5px solid #c4b5fd;
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+    .btn-admin:hover {
+      background: #ddd6fe;
+      border-color: #7c3aed;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(124, 58, 237, 0.2);
+    }
+    .btn-admin-active {
+      background: #fef2f2;
+      color: #b91c1c;
+      border: 1.5px solid #fca5a5;
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      font-family: inherit;
+      box-shadow: 0 2px 8px rgba(239, 68, 68, 0.15);
+    }
+    .btn-admin-active:hover {
+      background: #fee2e2;
+      border-color: #dc2626;
+      color: #991b1b;
+      transform: translateY(-1px);
+    }
+    .block-tabs-nav {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 12px 0 6px;
+    }
+    .block-tab-btn {
+      border: 1.5px solid #ede9fe;
+      background: #fff;
+      color: #6b7280;
+      border-radius: 20px;
+      padding: 5px 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      font-family: inherit;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      user-select: none;
+    }
+    .block-tab-btn.active {
+      border-color: #7c3aed;
+      background: #7c3aed;
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(124, 58, 237, 0.25);
+    }
+    body:not(.admin-mode) .block-tab-btn:not(.active) {
+      cursor: not-allowed;
+      opacity: 0.72;
+      background: #fcfbfe;
+    }
+    body:not(.admin-mode) .block-tab-btn:not(.active):hover {
+      border-color: #fca5a5;
+      background: #fff1f2;
+      color: #9f1239;
+    }
+    body.admin-mode .block-tab-btn {
+      cursor: pointer;
+    }
+    body.admin-mode .block-tab-btn:not(.active) {
+      opacity: 1;
+      background: #fff;
+    }
+    body.admin-mode .block-tab-btn:not(.active):hover {
+      border-color: #7c3aed;
+      background: #ede9fe;
+      color: #5b21b6;
+      transform: translateY(-1px);
+    }
+    .admin-toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      opacity: 0;
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      z-index: 10000;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+      max-width: 90%;
+      text-align: center;
+    }
+    .admin-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    .admin-toast-ok { background: #15803d; color: #fff; }
+    .admin-toast-warn { background: #b45309; color: #fff; }
+    .admin-toast-info { background: #4338ca; color: #fff; }
     @media print {
       body { background:#fff!important; color:#000!important; }
       .no-print { display:none!important; }
@@ -113,21 +232,45 @@
 
 <!-- ── HEADER ─────────────────────────────────── -->
 <div class="no-print" style="margin-bottom:24px;">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:10px;">
     <div>
       <span style="font-size:0.72rem;color:#9ca3af;text-transform:uppercase;letter-spacing:2px;font-weight:700;">Psicologia · Batxillerat</span>
       <h1 style="font-size:1.7rem;font-weight:800;color:#1e1b4b;margin:4px 0 0;">Les Emocions</h1>
     </div>
-    <div style="text-align:right;">
-      <div id="block-label" style="font-size:0.8rem;color:#6b7280;">Introducció</div>
-      <div id="xp-display" style="font-size:0.82rem;font-weight:700;color:#7c3aed;margin-top:2px;">⭐ 0 pts</div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button id="btn-admin-toggle" class="btn-admin" onclick="handleAdminBtnClick()">
+        🔑 Mode Admin
+      </button>
+      <div style="text-align:right;">
+        <div id="block-label" style="font-size:0.8rem;color:#6b7280;">Introducció</div>
+        <div id="xp-display" style="font-size:0.82rem;font-weight:700;color:#7c3aed;margin-top:2px;">⭐ 0 pts</div>
+      </div>
     </div>
   </div>
   <div style="background:#ede9fe;border-radius:99px;height:8px;overflow:hidden;">
     <div id="progress-bar" class="progress-fill" style="height:100%;width:0%;background:linear-gradient(90deg,#7c3aed,#a855f7);border-radius:99px;"></div>
   </div>
-  <div style="text-align:center;margin-top:10px;">
-    <span class="step-dot dc" id="sd0"></span><span class="step-dot" id="sd1"></span><span class="step-dot" id="sd2"></span><span class="step-dot" id="sd3"></span><span class="step-dot" id="sd4"></span><span class="step-dot" id="sd5"></span><span class="step-dot" id="sd6"></span><span class="step-dot" id="sd7"></span><span class="step-dot" id="sd8"></span>
+  <!-- Tabs Navigation -->
+  <div class="block-tabs-nav" id="block-tabs-bar">
+    <button type="button" class="block-tab-btn active" data-tab="0" onclick="handleTabClick(0)">Intro</button>
+    <button type="button" class="block-tab-btn" data-tab="1" onclick="handleTabClick(1)">Bloc 1</button>
+    <button type="button" class="block-tab-btn" data-tab="2" onclick="handleTabClick(2)">Bloc 2</button>
+    <button type="button" class="block-tab-btn" data-tab="3" onclick="handleTabClick(3)">Bloc 3</button>
+    <button type="button" class="block-tab-btn" data-tab="4" onclick="handleTabClick(4)">Bloc 4</button>
+    <button type="button" class="block-tab-btn" data-tab="5" onclick="handleTabClick(5)">Bloc 5</button>
+    <button type="button" class="block-tab-btn" data-tab="6" onclick="handleTabClick(6)">Bloc 6</button>
+    <button type="button" class="block-tab-btn" data-tab="7" onclick="handleTabClick(7)">Bloc 7</button>
+    <button type="button" class="block-tab-btn" data-tab="8" onclick="handleTabClick(8)">Bloc 8</button>
+  </div>
+  <div style="text-align:center;margin-top:4px;">
+    <span class="step-dot dc" id="sd0" title="Intro"></span><span class="step-dot" id="sd1" title="Bloc 1"></span><span class="step-dot" id="sd2" title="Bloc 2"></span><span class="step-dot" id="sd3" title="Bloc 3"></span><span class="step-dot" id="sd4" title="Bloc 4"></span><span class="step-dot" id="sd5" title="Bloc 5"></span><span class="step-dot" id="sd6" title="Bloc 6"></span><span class="step-dot" id="sd7" title="Bloc 7"></span><span class="step-dot" id="sd8" title="Bloc 8"></span>
+  </div>
+  <div id="admin-mode-banner" style="display:none;margin-top:10px;background:#fef3c7;border:1.5px solid #fcd34d;border-radius:12px;padding:10px 16px;align-items:center;justify-content:space-between;gap:10px;font-size:0.84rem;color:#92400e;">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span style="font-size:1.1rem;">🛠️</span>
+      <span><strong>Mode Administrador actiu:</strong> La navegació per pestanyes està desbloquejada. Clica qualsevol pestanya per accedir-hi lliurement.</span>
+    </div>
+    <button onclick="handleAdminBtnClick()" style="background:#b45309;color:#fff;border:none;border-radius:8px;padding:5px 12px;font-size:0.78rem;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit;">Sortir d'Admin</button>
   </div>
 </div>
 
@@ -790,21 +933,67 @@
 
 </div><!-- end container -->
 
+<!-- Admin Login Modal -->
+<div id="admin-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(15,23,42,0.6);z-index:9999;align-items:center;justify-content:center;backdrop-filter:blur(3px);padding:16px;">
+  <div style="background:#fff;border-radius:20px;max-width:380px;width:100%;padding:28px 24px;box-shadow:0 16px 40px rgba(0,0,0,0.25);border:1.5px solid #ede9fe;text-align:center;animation:fadeIn 0.25s ease;">
+    <div style="font-size:2.4rem;margin-bottom:12px;">🔐</div>
+    <h3 style="font-size:1.3rem;font-weight:800;color:#1e1b4b;margin-bottom:6px;">Mode Administrador</h3>
+    <p style="font-size:0.86rem;color:#6b7280;line-height:1.5;margin-bottom:20px;">
+      Introdueix el codi d'accés per desbloquejar el canvi lliure de pestanyes.
+    </p>
+    <div style="margin-bottom:16px;">
+      <input type="password" id="admin-code-input" placeholder="Codi d'accés" maxlength="12"
+        style="width:100%;padding:12px 16px;border-radius:12px;border:2px solid #c4b5fd;font-size:1.15rem;text-align:center;letter-spacing:4px;outline:none;font-family:inherit;transition:all 0.2s;"
+        onfocus="this.style.borderColor='#7c3aed'"
+        onblur="this.style.borderColor='#c4b5fd'"
+        onkeydown="if(event.key==='Enter') submitAdminCode()" />
+      <div id="admin-code-error" style="display:none;color:#dc2626;font-size:0.83rem;font-weight:600;margin-top:8px;">
+        ❌ Codi incorrecte. Torna-ho a provar.
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:center;">
+      <button type="button" class="btn btn-s" onclick="closeAdminModal()" style="padding:10px 18px;font-size:0.88rem;flex:1;">Cancel·lar</button>
+      <button type="button" class="btn btn-p" onclick="submitAdminCode()" style="padding:10px 20px;font-size:0.88rem;flex:1;">Accedir</button>
+    </div>
+  </div>
+</div>
+
+<!-- Admin Exit Modal -->
+<div id="admin-exit-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(15,23,42,0.6);z-index:9999;align-items:center;justify-content:center;backdrop-filter:blur(3px);padding:16px;">
+  <div style="background:#fff;border-radius:20px;max-width:400px;width:100%;padding:28px 24px;box-shadow:0 16px 40px rgba(0,0,0,0.25);border:1.5px solid #ede9fe;text-align:center;animation:fadeIn 0.25s ease;">
+    <div style="font-size:2.4rem;margin-bottom:12px;">🔓</div>
+    <h3 style="font-size:1.3rem;font-weight:800;color:#1e1b4b;margin-bottom:6px;">Sortir del Mode Admin</h3>
+    <p style="font-size:0.86rem;color:#6b7280;line-height:1.5;margin-bottom:20px;">
+      Vols desactivar el mode administrador? El canvi lliure de pestanyes tornarà a quedar bloquejat de sèrie.
+    </p>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <button type="button" class="btn btn-p" onclick="exitAdminMode(true)" style="padding:11px 18px;font-size:0.88rem;">🔄 Sortir i anar a l'Inici</button>
+      <button type="button" class="btn btn-s" onclick="exitAdminMode(false)" style="padding:10px 18px;font-size:0.88rem;">📍 Sortir i quedar-me aquí</button>
+      <button type="button" style="background:transparent;border:none;color:#6b7280;font-size:0.85rem;font-weight:600;padding:6px;cursor:pointer;font-family:inherit;" onclick="closeAdminExitModal()">Cancel·lar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Notification -->
+<div id="admin-toast" class="admin-toast"></div>
+
 <script>
 // ════════════════════════════════════════
 // STATE
 // ════════════════════════════════════════
 var currentBlock = 0;
 var xp = 0;
+var isAdminMode = false;
 
 // ════════════════════════════════════════
-// NAVIGATION
+// NAVIGATION & ADMIN MODE
 // ════════════════════════════════════════
 function goToBlock(n) {
   document.querySelectorAll('.block-panel').forEach(function(p) { p.classList.remove('active'); });
   document.getElementById('panel-' + n).classList.add('active');
   currentBlock = n;
   updateProgress();
+  updateAdminUI();
   if (n === 2) loadScen(0);
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -821,6 +1010,142 @@ function updateProgress() {
     if (i < currentBlock) dot.classList.add('dd');
     else if (i === currentBlock) dot.classList.add('dc');
   }
+
+  // Update tabs active state
+  document.querySelectorAll('.block-tab-btn').forEach(function(btn) {
+    var bIdx = parseInt(btn.getAttribute('data-tab'), 10);
+    btn.classList.toggle('active', bIdx === currentBlock);
+  });
+}
+
+function updateAdminUI() {
+  var adminBtn = document.getElementById('btn-admin-toggle');
+  var banner = document.getElementById('admin-mode-banner');
+
+  if (isAdminMode) {
+    document.body.classList.add('admin-mode');
+    if (adminBtn) {
+      adminBtn.style.display = 'inline-flex';
+      adminBtn.className = 'btn-admin-active';
+      adminBtn.innerHTML = '🔓 Sortir del Mode Admin';
+    }
+    if (banner) {
+      banner.style.display = 'flex';
+    }
+    for (var i = 0; i <= 8; i++) {
+      var d = document.getElementById('sd' + i);
+      if (d) d.style.cursor = 'pointer';
+    }
+  } else {
+    document.body.classList.remove('admin-mode');
+    if (banner) {
+      banner.style.display = 'none';
+    }
+    if (adminBtn) {
+      // Button ONLY present on the first tab (Intro), NOT on the rest of the tabs
+      if (currentBlock === 0) {
+        adminBtn.style.display = 'inline-flex';
+        adminBtn.className = 'btn-admin';
+        adminBtn.innerHTML = '🔑 Mode Admin';
+      } else {
+        adminBtn.style.display = 'none';
+      }
+    }
+    for (var i = 0; i <= 8; i++) {
+      var d = document.getElementById('sd' + i);
+      if (d) d.style.cursor = 'not-allowed';
+    }
+  }
+}
+
+function handleTabClick(n) {
+  if (n === currentBlock) return;
+  if (!isAdminMode) {
+    showToast('🔒 El canvi lliure de pestanyes està blocat de sèrie. Activa el Mode Administrador amb el codi 288 a la pantalla inicial.', 'warn');
+    return;
+  }
+  goToBlock(n);
+}
+
+function handleAdminBtnClick() {
+  if (!isAdminMode) {
+    openAdminModal();
+  } else {
+    openAdminExitModal();
+  }
+}
+
+function openAdminModal() {
+  var modal = document.getElementById('admin-modal');
+  var input = document.getElementById('admin-code-input');
+  var err = document.getElementById('admin-code-error');
+  if (err) err.style.display = 'none';
+  if (input) {
+    input.value = '';
+    input.style.borderColor = '#c4b5fd';
+  }
+  if (modal) {
+    modal.style.display = 'flex';
+    setTimeout(function() { if (input) input.focus(); }, 80);
+  }
+}
+
+function closeAdminModal() {
+  var modal = document.getElementById('admin-modal');
+  if (modal) modal.style.display = 'none';
+}
+
+function submitAdminCode() {
+  var input = document.getElementById('admin-code-input');
+  var err = document.getElementById('admin-code-error');
+  var val = input ? input.value.trim() : '';
+
+  if (val === '288') {
+    isAdminMode = true;
+    closeAdminModal();
+    updateAdminUI();
+    showToast('✅ Mode Administrador activat. Ara pots canviar de pestanya lliurement.', 'ok');
+  } else {
+    if (err) err.style.display = 'block';
+    if (input) {
+      input.style.borderColor = '#dc2626';
+      input.select();
+      input.focus();
+    }
+  }
+}
+
+function openAdminExitModal() {
+  var modal = document.getElementById('admin-exit-modal');
+  if (modal) modal.style.display = 'flex';
+}
+
+function closeAdminExitModal() {
+  var modal = document.getElementById('admin-exit-modal');
+  if (modal) modal.style.display = 'none';
+}
+
+function exitAdminMode(returnToIntro) {
+  closeAdminExitModal();
+  isAdminMode = false;
+  if (returnToIntro) {
+    goToBlock(0);
+  } else {
+    updateAdminUI();
+  }
+  showToast('🔒 Has sortit del Mode Administrador. Navegació de pestanyes bloquejada.', 'info');
+}
+
+var toastTimer = null;
+function showToast(msg, type) {
+  var toast = document.getElementById('admin-toast');
+  if (!toast) return;
+  clearTimeout(toastTimer);
+  toast.textContent = msg;
+  toast.className = 'admin-toast show admin-toast-' + (type || 'info');
+  toastTimer = setTimeout(function() {
+    toast.className = 'admin-toast';
+  }, 3500);
 }
 
 function downloadSummaryDoc() {
@@ -1423,8 +1748,17 @@ function b8TryMatch() {
 // ════════════════════════════════════════
 // INIT
 // ════════════════════════════════════════
+for (var i = 0; i <= 8; i++) {
+  (function(idx) {
+    var dot = document.getElementById('sd' + idx);
+    if (dot) {
+      dot.onclick = function() { handleTabClick(idx); };
+    }
+  })(i);
+}
 loadScen(0);
 updateProgress();
+updateAdminUI();
 </script>
 </body>
 </html>
