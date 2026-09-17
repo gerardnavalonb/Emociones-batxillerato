@@ -1332,7 +1332,7 @@ function updateAdminUI() {
 function handleTabClick(n) {
   if (n === currentBlock) return;
   if (!isAdminMode) {
-    showToast('🔒 El cambio libre de pestañas está bloqueado. Activa el Modo Administrador con el código 288 en la pantalla inicial.', 'warn');
+    showToast('🔒 El cambio libre entre pestañas está bloqueado. Finaliza la actividad para poder avanzar a la siguiente.', 'warn');
     return;
   }
   goToBlock(n);
